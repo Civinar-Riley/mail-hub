@@ -62,7 +62,16 @@ class RateLimiter {
     w.timestamps.push(Date.now());
   }
 
+  /**
+   * A cooldown can only be extended, never cut short. The writers are
+   * in-flight requests that started before the provider went cold (dispatch
+   * never calls a provider that is already cooling down), so a later, shorter
+   * verdict — a 30 s transient after a 600 s Retry-After — is stale, not
+   * fresher. The reason travels with the deadline that wins.
+   */
   setCooldown(provider: string, untilMs: number, reason = 'cooldown'): void {
+    const current = this.cooldowns.get(provider);
+    if (current !== undefined && current > Date.now() && current >= untilMs) return;
     this.cooldowns.set(provider, untilMs);
     this.cooldownReasons.set(provider, reason);
   }

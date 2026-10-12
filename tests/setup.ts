@@ -33,6 +33,7 @@ beforeEach(() => {
     'blocks',
     'provider_stats',
     'provider_config',
+    'dispatch_rules',
     'outlook_accounts',
     'outlook_oauth_sessions',
     'yyds_accounts',

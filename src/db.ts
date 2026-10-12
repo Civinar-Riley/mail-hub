@@ -87,6 +87,13 @@ CREATE TABLE IF NOT EXISTS provider_config (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS dispatch_rules (
+  service TEXT PRIMARY KEY,
+  order_json TEXT NOT NULL,
+  others TEXT NOT NULL DEFAULT 'append',
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS outlook_accounts (
   email TEXT PRIMARY KEY,
   password TEXT NOT NULL,
@@ -311,6 +318,8 @@ export function initDb(): Database.Database {
     }
   }
 
+  removeNullProviderConfigRows(db);
+
   db.exec(`
     CREATE INDEX IF NOT EXISTS idx_inboxes_status ON inboxes(status);
     CREATE INDEX IF NOT EXISTS idx_inboxes_provider_address ON inboxes(provider, address);
@@ -430,6 +439,14 @@ export function bumpServiceReported(name: string, success: boolean): void {
     VALUES (?, 1, datetime('now'), datetime('now'))
     ON CONFLICT(name) DO UPDATE SET ${column} = ${column} + 1
   `).run(service);
+}
+
+// `provider TEXT PRIMARY KEY` is not NOT NULL in SQLite, so a registration
+// with an undefined name once inserted thousands of NULL-keyed rows (the
+// WHERE provider = ? existence check never matches NULL). The registry now
+// rejects such names; this removes what earlier builds left behind.
+export function removeNullProviderConfigRows(database: Database.Database): number {
+  return database.prepare(`DELETE FROM provider_config WHERE provider IS NULL`).run().changes;
 }
 
 function backupDir(): string {

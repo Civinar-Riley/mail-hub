@@ -2,19 +2,13 @@ import { parseTimestamp } from './time.js';
 import { nanoid } from 'nanoid';
 import { registry } from './providers/registry.js';
 import { rateLimiter } from './rate-limiter.js';
-import { allRows, bumpServiceCreated, getDb, getRow } from './db.js';
-import { PROVIDER, type ProviderName, type BaseProvider, type InboxData } from './providers/base.js';
+import { allRows, bumpServiceCreated, getDb } from './db.js';
+import { type BaseProvider, type InboxData } from './providers/base.js';
 import { createLogger } from './logger.js';
 import { errorMessage, httpStatus, isTransientUpstreamError, retryAfterHeader } from './errors.js';
+import { EXAMPLE_SERVICE_RE, evaluateDispatch } from './dispatch-rules.js';
 
 const log = createLogger('dispatcher');
-
-const PROVIDER_PAIRS: Partial<Record<string, ProviderName[]>> = {
-  [PROVIDER.MAILTM]: [PROVIDER.MAILGW],
-  [PROVIDER.MAILGW]: [PROVIDER.MAILTM],
-  [PROVIDER.TEMPMAIL_LOL]: [PROVIDER.TEMPMAIL_ING],
-  [PROVIDER.TEMPMAIL_ING]: [PROVIDER.TEMPMAIL_LOL],
-};
 
 interface DispatchOptions {
   for?: string;
@@ -62,22 +56,23 @@ function resolveExpiresAt(providerExpiresAt: string | undefined, durationSeconds
   return new Date(requestedMs ?? Date.now() + DEFAULT_INBOX_TTL_MS).toISOString();
 }
 
-interface ProviderScore {
-  provider: BaseProvider;
-  score: number;
-  reason: string;
-  /** Unblocked domains fetched during scoring; undefined = not fetched (reuse requires a live fetch). */
-  unblockedDomains?: string[];
-}
+// One slow domain endpoint must not stall every automatic create. The timeout
+// error carries ETIMEDOUT so isTransientUpstreamError classifies it and the
+// provider gets the standard transient cooldown instead of being retried
+// first on the very next request.
+const DOMAINS_TIMEOUT_MS = 5000;
 
-// Scoring runs getDomains across all providers; one slow upstream must not
-// stall every inbox creation, so scoring caps each fetch at 5s and the
-// creation path reuses whatever scoring already fetched.
-const SCORING_DOMAINS_TIMEOUT_MS = 5000;
+class DomainsTimeoutError extends Error {
+  readonly code = 'ETIMEDOUT';
+  constructor(ms: number) {
+    super(`getDomains timed out after ${ms}ms`);
+    this.name = 'DomainsTimeoutError';
+  }
+}
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`timed out after ${ms}ms`)), ms);
+    const timer = setTimeout(() => reject(new DomainsTimeoutError(ms)), ms);
     promise.then(
       (value) => { clearTimeout(timer); resolve(value); },
       (error) => { clearTimeout(timer); reject(error); },
@@ -133,8 +128,8 @@ function getBlockedDomains(service: string): Set<string> {
 }
 
 /**
- * The scoping passed to getDomains. Kept in one place because four call sites
- * need it identical — if one of them drops `alias`, a provider that filters by
+ * The scoping passed to getDomains. Kept in one place because every call site
+ * needs it identical — if one of them drops `alias`, a provider that filters by
  * prior service use reports zero domains and dispatch fails with
  * "all domains blocked" before createInbox is reached.
  */
@@ -182,76 +177,6 @@ async function selectAllowedDomain(
     throw new Error(`${provider.meta.name}: all domains blocked`);
   }
   return pickDomain(provider.meta.name, allowed);
-}
-
-function getProviderStats(name: string): { success: number; fail: number } {
-  const db = getDb();
-  const row = getRow<{ success_count: number; fail_count: number }>(
-    db,
-    `SELECT success_count, fail_count FROM provider_stats WHERE provider = ?`,
-    name,
-  );
-  if (!row) return { success: 0, fail: 0 };
-  return { success: row.success_count || 0, fail: row.fail_count || 0 };
-}
-
-function getAllProviderStats(): Map<string, { success: number; fail: number }> {
-  const db = getDb();
-  const rows = allRows<{ provider: string; success_count: number; fail_count: number }>(
-    db,
-    `SELECT provider, success_count, fail_count FROM provider_stats`,
-  );
-  return new Map(rows.map((r) => [r.provider, { success: r.success_count || 0, fail: r.fail_count || 0 }]));
-}
-
-async function scoreProviders(
-  providers: BaseProvider[],
-  blockedDomains: Set<string>,
-  needPolling: boolean,
-  targetService?: string,
-  alias?: boolean
-): Promise<ProviderScore[]> {
-  const allStats = getAllProviderStats();
-
-  const scored = await Promise.all(providers.map(async (p): Promise<ProviderScore | null> => {
-    if (needPolling && !p.meta.features.pollInbox) return null;
-
-    const cfg = registry.getConfig(p.meta.name);
-    if (!cfg.autoDispatch) return null;
-    const stats = allStats.get(p.meta.name) ?? { success: 0, fail: 0 };
-    const rateOk = rateLimiter.isCreateAvailable(p.meta.name);
-
-    let score = p.meta.trustLevel * 10;
-    if (cfg.priority) score += cfg.priority;
-    if (rateOk) score += 15;
-    score -= Math.min(stats.fail, 10) * 5;
-
-    let domains: string[] = [];
-    let unblockedDomains: string[] | undefined;
-    if (rateOk && !canCreateWithoutPreselectedDomain(p)) {
-      try {
-        domains = await withTimeout(
-          p.getDomains(domainScope(targetService, alias)),
-          SCORING_DOMAINS_TIMEOUT_MS,
-        );
-        unblockedDomains = domains.filter((d) => !isDomainBlocked(d, blockedDomains));
-        if (unblockedDomains.length > 0) score += 20;
-      } catch (e) {
-        log.warn('getDomains failed during scoring', { provider: p.meta.name, error: errorMessage(e) });
-      }
-    }
-
-    let reason = `trust=${p.meta.trustLevel}`;
-    if (!rateOk) reason += ', rate-limited';
-    if (unblockedDomains?.length === 0 && domains.length > 0) reason += ', all-domains-blocked';
-    if (stats.fail > 0) reason += `, fails=${stats.fail}`;
-
-    return { provider: p, score, reason, unblockedDomains };
-  }));
-
-  return scored
-    .filter((entry): entry is ProviderScore => entry !== null)
-    .sort((a, b) => b.score - a.score);
 }
 
 function saveInbox(
@@ -347,11 +272,10 @@ export async function dispatch(opts: DispatchOptions): Promise<DispatchResult> {
   // Normalize once so target_service is stored, block-matched, and counted
   // under a single canonical name (" x.com " and "x.com" must not diverge).
   opts = { ...opts, for: opts.for?.trim() || undefined };
-  if (opts.for && /^(example\.(com|org|net)|test\.(com|org)|localhost)$/i.test(opts.for)) {
+  if (opts.for && EXAMPLE_SERVICE_RE.test(opts.for)) {
     throw new Error(`'${opts.for}' is an example domain, use a real target service`);
   }
 
-  const enabledProviders = registry.getEnabled();
   const needPolling = opts.needPolling !== false;
 
   if (opts.provider) {
@@ -374,53 +298,31 @@ export async function dispatch(opts: DispatchOptions): Promise<DispatchResult> {
   }
 
   const blockedDomains = opts.for ? getBlockedDomains(opts.for) : new Set<string>();
-  const scored = await scoreProviders(enabledProviders, blockedDomains, needPolling, opts.for, opts.alias);
+  const { candidates } = evaluateDispatch({ service: opts.for, needPolling });
   const errors: string[] = [];
 
-  for (const { provider: p, reason, unblockedDomains } of scored) {
-    if (!rateLimiter.isCreateAvailable(p.meta.name)) {
-      const pairs = PROVIDER_PAIRS[p.meta.name] ?? [];
-      for (const pairName of pairs) {
-        const pair = registry.get(pairName);
-        const pairCfg = registry.getConfig(pairName);
-        if (pair && pairCfg.enabled && rateLimiter.isCreateAvailable(pairName)) {
-          try {
-            let domain: string | undefined;
-            if (!canCreateWithoutPreselectedDomain(pair)) {
-              let domains = await pair.getDomains(domainScope(opts.for, opts.alias));
-              domains = domains.filter((d) => !isDomainBlocked(d, blockedDomains));
-              if (domains.length === 0) continue;
-              domain = domains.length ? pickDomain(pairName, domains) : undefined;
-            }
-
-            return await tryCreateInbox(pair, pairName, opts, domain);
-          } catch (e) {
-            errors.push(`${pairName}(pair): ${errorMessage(e)}`);
-            recordProviderFailure(pairName, e);
-            continue;
-          }
-        }
-      }
-      errors.push(`${p.meta.name}: rate-limited (${reason})`);
+  for (const candidate of candidates) {
+    if (!candidate.eligible) {
+      errors.push(`${candidate.provider}: skipped (${candidate.reason})`);
       continue;
     }
+    const p = registry.get(candidate.provider);
+    if (!p) continue;
 
+    // Domain fetch, block filter and create share one failure boundary: a
+    // throw anywhere here records the error and moves on to the next
+    // candidate. Only this provider's domains are fetched — never those of
+    // providers further down the order that may never be reached.
     try {
       let domain: string | undefined;
-      if (!canCreateWithoutPreselectedDomain(p)) {
-        // Reuse the domains scoring already fetched; fetch only when scoring
-        // could not (rate-limited then, or the scoring fetch failed).
-        let domains = unblockedDomains;
-        if (domains === undefined) {
-          domains = (await p.getDomains(domainScope(opts.for, opts.alias)))
-            .filter((d) => !isDomainBlocked(d, blockedDomains));
-        }
-
-        if (domains.length === 0 && p.meta.type !== 'alias') {
+      if (!canCreateWithoutPreselectedDomain(p) && p.meta.type !== 'alias') {
+        const domains = (await withTimeout(p.getDomains(domainScope(opts.for, opts.alias)), DOMAINS_TIMEOUT_MS))
+          .filter((d) => !isDomainBlocked(d, blockedDomains));
+        if (domains.length === 0) {
           errors.push(`${p.meta.name}: no unblocked address available`);
           continue;
         }
-        domain = domains.length ? pickDomain(p.meta.name, domains) : undefined;
+        domain = pickDomain(p.meta.name, domains);
       }
 
       return await tryCreateInbox(p, p.meta.name, opts, domain);

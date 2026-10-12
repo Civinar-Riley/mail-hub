@@ -1,6 +1,7 @@
 import { registry } from './registry.js';
 import { allRows, getDb } from '../db.js';
 import { createLogger } from '../logger.js';
+import { seedDispatchRulesFromPriority } from '../dispatch-rules.js';
 
 const log = createLogger('providers');
 import { ImapProvider } from './imap.js';
@@ -19,6 +20,9 @@ export function registerAllProviders(): void {
   registry.register(new IcloudProvider());
 
   registerTemplateProviders();
+
+  // Needs trustLevel from the registered providers, so it cannot live in initDb().
+  seedDispatchRulesFromPriority();
 }
 
 function seedBuiltinTemplates(): void {

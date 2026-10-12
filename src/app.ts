@@ -14,6 +14,7 @@ import { imapRoutes } from './routes/imap.js';
 import { icloudRoutes } from './routes/icloud.js';
 import { serviceRoutes } from './routes/services.js';
 import { templateProviderRoutes } from './routes/template-providers.js';
+import { dispatchRoutes } from './routes/dispatch.js';
 import { allRows, DEFAULT_SETTINGS, getDb, getRow, getSetting, logActivity } from './db.js';
 import { hashApiKey, secureCompare } from './crypto.js';
 import { requireAdmin, type AdminEnv } from './routes/admin.js';
@@ -268,12 +269,52 @@ Response 200:
         "type": "api",
         "tier": "free",
         "trustLevel": 3,
+        "enabled": true,
+        "autoDispatch": true,
         "features": { "customUsername": true, "pollInbox": true, "realtime": false, "attachments": true },
         "rateStatus": { ... }
       },
       ...
     ]
   }
+
+### GET /api/dispatch/preview?for=<service>
+Dry run of auto-dispatch: the order a POST /api/inbox without "provider" would
+try providers in, and why each one is or is not eligible right now. Pure local
+computation — nothing upstream is called, nothing changes. "for" is optional
+(omit it to see the global order); needPolling=false keeps providers that
+cannot poll.
+
+Response 200:
+  {
+    "service": "twitter.com",
+    "rule": { "source": "service" | "global" | "default", "others": "append" | "exclude" },
+    "candidates": [
+      { "provider": "outlook", "eligible": true },
+      { "provider": "mailtm", "eligible": false, "reason": "cooldown",
+        "cooldownReason": "rate-limit", "nextAvailableAt": "2026-10-12T09:15:00.000Z" },
+      { "provider": "icloud", "eligible": false, "reason": "manual_only" }
+    ]
+  }
+
+Skip reasons: unknown_provider (rule names a provider that is not registered
+right now, e.g. a disabled template), disabled, manual_only (auto-dispatch off
+and not named by this service's rule), no_polling, rate_limited, cooldown.
+Blocked-domain filtering happens at create time and is not previewed.
+
+### Dispatch rules (admin only)
+
+  GET    /api/dispatch/rules            — { defaultOrder: [...], rules: [{ service, order, others, updatedAt }] }
+  PUT    /api/dispatch/rules/:service   — Body: { "order": ["outlook", "icloud"], "others": "append" | "exclude" }
+  DELETE /api/dispatch/rules/:service   — Remove the rule; deleting "*" restores the default order
+
+"*" is the global order. Without one, defaultOrder applies: trustLevel
+descending, registration order for ties. Registered providers a rule does not
+list are appended in registration order. A service rule's providers come
+first; "others": "append" lets the rest follow in global order, "exclude" uses
+only the listed ones. A provider named by a service rule takes part even when
+its auto-dispatch is off. Every name in "order" must be known: registered,
+ever registered, or already in the rule being replaced.
 
 ## Error Responses
 
@@ -291,8 +332,11 @@ Common HTTP status codes:
 
 ## Provider Notes
 
-Mail Hub aggregates multiple upstream email providers. The dispatcher selects
-the best available provider automatically. Two providers use pool-based resources:
+Mail Hub aggregates multiple upstream email providers. When POST /api/inbox
+carries no "provider", the dispatcher walks the dispatch order (see
+/api/dispatch/preview) and uses the first provider that is enabled, allowed to
+auto-dispatch, not rate-limited or cooling down, and able to create an inbox.
+Two providers use pool-based resources:
 
 Paid providers (tier "paid") have auto-dispatch disabled by default — they are
 only used when explicitly requested via the "provider" field in POST /api/inbox.
@@ -395,8 +439,9 @@ Usage:
   → address: "juliahoffman@mydomain.com"
 
 The "domain" field is optional — if omitted, a random configured domain is picked.
-Auto-dispatch: on by default (free). IMAP is scored with high trust (trustLevel=10)
-since it's the user's own infrastructure.
+Auto-dispatch: on by default (free). IMAP has trustLevel=10, so it leads the
+default dispatch order until the operator saves a different one (it is the
+user's own infrastructure).
 
 #### IMAP Pool Management (admin only)
 
@@ -589,6 +634,7 @@ export function createApp(): Hono<AdminEnv> {
   app.route('/api', icloudRoutes);
   app.route('/api', serviceRoutes);
   app.route('/api', templateProviderRoutes);
+  app.route('/api', dispatchRoutes);
   app.route('/api', settingsRoutes);
   app.route('/api', batchJobRoutes);
 

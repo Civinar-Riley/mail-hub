@@ -74,15 +74,17 @@ providerRoutes.patch('/providers/:name', requireAdmin, async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const db = getDb();
 
+  // The scalar priority is gone; a client still sending it must learn that
+  // loudly rather than have the field silently dropped.
+  if (body.priority !== undefined) {
+    return c.json({ error: 'priority was removed; use PUT /api/dispatch/rules/* to set dispatch order' }, 400);
+  }
+
   const clauses: string[] = [];
   const params: unknown[] = [];
   if (body.enabled !== undefined) {
     clauses.push('enabled = ?');
     params.push(body.enabled ? 1 : 0);
-  }
-  if (body.priority !== undefined) {
-    clauses.push('priority = ?');
-    params.push(body.priority);
   }
   if (body.autoDispatch !== undefined) {
     clauses.push('auto_dispatch = ?');

@@ -344,7 +344,29 @@ select{cursor:pointer}
 .provider-config-row{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .provider-config-row label{font-size:var(--text-sm);color:var(--text3)}
 .provider-inline-check{display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none}
-.provider-priority-input{width:56px}
+/* ─── Dispatch order ─── */
+.dispatch-sub{padding:10px 20px 0;font-size:var(--text-sm);color:var(--text3);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.dispatch-list{padding:12px 20px 4px;display:flex;flex-direction:column;gap:6px}
+.dispatch-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--control-bg);font-size:var(--text-base)}
+.dispatch-row.ineligible{opacity:.6}
+.dispatch-rank{width:22px;text-align:right;color:var(--text3);font-variant-numeric:tabular-nums;font-size:var(--text-sm)}
+.dispatch-name{font-weight:var(--fw-medium);display:flex;align-items:center;gap:8px;min-width:0;flex:1;flex-wrap:wrap}
+.dispatch-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;font-size:var(--text-sm);font-weight:var(--fw-medium);white-space:nowrap}
+.dispatch-chip.ok{background:var(--emerald-dim);color:var(--emerald)}
+.dispatch-chip.off{background:var(--control-bg);color:var(--text3);border:1px solid var(--border)}
+.dispatch-chip.warn{background:var(--amber-dim);color:var(--amber)}
+.dispatch-chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.dispatch-actions{display:flex;gap:4px;margin-left:auto}
+.dispatch-actions .btn-icon:disabled{opacity:.3;cursor:default}
+.dispatch-toolbar{display:flex;gap:8px;align-items:center;padding:12px 20px 16px;flex-wrap:wrap}
+.dispatch-toolbar input{max-width:280px}
+.dispatch-toolbar select{max-width:240px}
+.dispatch-preview-result{padding:0 20px 16px}
+.dispatch-note{font-size:var(--text-sm);color:var(--text3);margin-top:8px}
+.dispatch-mode{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.dispatch-mode button{padding:5px 12px;font-size:var(--text-sm);background:var(--control-bg);color:var(--text2);border:none;cursor:pointer}
+.dispatch-mode button.active{background:var(--blue-dim);color:var(--blue);font-weight:var(--fw-medium)}
+.dispatch-radio{display:inline-flex;align-items:center;gap:4px;font-size:var(--text-sm);color:var(--text2);cursor:pointer}
 .trust-bar{display:flex;gap:3px;align-items:center}
 .trust-pip{width:14px;height:4px;border-radius:2px;background:var(--border)}
 .trust-pip.filled{background:var(--emerald)}
@@ -509,6 +531,7 @@ html:not(.authed) #app-main{display:none}
 .m-get{background:var(--blue-dim);color:var(--blue)}
 .m-post{background:var(--emerald-dim);color:var(--emerald)}
 .m-patch{background:var(--amber-dim);color:var(--amber)}
+.m-put{background:var(--amber-dim);color:var(--amber)}
 .m-delete{background:var(--rose-dim);color:var(--rose)}
 .docs-content{padding:0 32px 40px;overflow-y:auto}
 .docs-section{padding:28px 0;border-bottom:1px solid var(--border)}
@@ -923,6 +946,22 @@ try {
       <div class="page-header">
         <div class="page-title-area"><h1 class="page-title" data-i18n="provider.title">渠道管理</h1></div>
       </div>
+      <div class="panel" id="dispatch-panel">
+        <div class="panel-header">
+          <span class="panel-title"><span data-i18n="dispatch.title">调度顺序</span></span>
+          <div class="panel-actions">
+            <button class="btn btn-sm" onclick="return resetDispatchOrder()" data-i18n="dispatch.reset">恢复默认</button>
+            <button class="btn btn-primary btn-sm" onclick="return saveDispatchOrder()" data-i18n="dispatch.save">保存顺序</button>
+          </div>
+        </div>
+        <div class="dispatch-sub"><span data-i18n="dispatch.subtitle">不指定 provider 的创建请求按此顺序逐个尝试，不可用的直接跳过。</span><span id="dispatch-source"></span></div>
+        <div class="dispatch-list" id="dispatch-list"></div>
+        <div class="dispatch-toolbar">
+          <input id="dispatch-preview-for" placeholder="twitter.com" data-i18n-ph="dispatch.preview_ph" onkeydown="if(event.key==='Enter')runDispatchPreview()">
+          <button class="btn btn-sm" onclick="return runDispatchPreview()" data-i18n="dispatch.preview_run">预演此服务</button>
+        </div>
+        <div class="dispatch-preview-result" id="dispatch-preview-result"></div>
+      </div>
       <div class="provider-grid" id="provider-grid"></div>
     </div>
 
@@ -1103,7 +1142,7 @@ try {
   <span class="ck">"expiresAt"</span>: <span class="cs">"2025-01-01T12:00:00Z"</span>,
   <span class="ck">"features"</span>: { <span class="ck">"pollInbox"</span>: <span class="cv">true</span>, <span class="ck">"attachments"</span>: <span class="cv">false</span>, ... }
 }</pre>
-                <div class="docs-note" data-i18n="docs.create_inbox_note">自动调度会按 Trust、限流状态、已封禁域名等综合评分选择最优渠道。Outlook 渠道从账号池中分配。</div>
+                <div class="docs-note" data-i18n="docs.create_inbox_note">自动调度按「调度顺序」逐个尝试渠道，跳过已禁用、仅手动、限流/冷却中的；顺序可全局或按目标服务设置，用 GET /api/dispatch/preview 可预演。Outlook 渠道从账号池中分配。</div>
               </div>
             </div>
 
@@ -1325,7 +1364,7 @@ try {
           <!-- ── 渠道管理 ── -->
           <div class="docs-section">
             <h2 data-i18n="docs.provider_title">渠道管理</h2>
-            <p data-i18n="docs.provider_desc">查询和配置邮箱渠道（Provider）。每个渠道可独立启用/禁用和调整优先级。</p>
+            <p data-i18n="docs.provider_desc">查询和配置邮箱渠道（Provider）。每个渠道可独立启用/禁用、选择是否参与自动调度；自动调度的先后顺序由下方的调度规则接口管理。</p>
             <div class="docs-note" style="margin-bottom:16px">
               <span data-i18n-html="docs.provider_note_title"><strong>池化渠道说明</strong><br></span>
               <span data-i18n-html="docs.provider_note_outlook"><strong>Outlook</strong>：1:1 账号分配模式，每个邮箱独占一个 Outlook 账号，关闭后账号回池。容量 = 空闲账号数。<br></span>
@@ -1344,7 +1383,7 @@ try {
   <span class="ck">"providers"</span>: [
     { <span class="ck">"name"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"displayName"</span>: <span class="cs">"Mail.tm"</span>,
       <span class="ck">"type"</span>: <span class="cs">"api"</span>, <span class="ck">"tier"</span>: <span class="cs">"free"</span>,
-      <span class="ck">"trustLevel"</span>: <span class="cv">3</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"priority"</span>: <span class="cv">0</span>,
+      <span class="ck">"trustLevel"</span>: <span class="cv">3</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"autoDispatch"</span>: <span class="cv">true</span>,
       <span class="ck">"rateLimit"</span>: { <span class="ck">"createPerMinute"</span>: <span class="cv">10</span>, <span class="ck">"pollPerMinute"</span>: <span class="cv">30</span> },
       <span class="ck">"features"</span>: { <span class="ck">"pollInbox"</span>: <span class="cv">true</span>, ... },
       <span class="ck">"rateStatus"</span>: { <span class="ck">"currentCount"</span>: <span class="cv">2</span>, <span class="ck">"maxPerWindow"</span>: <span class="cv">10</span> } }
@@ -1385,12 +1424,94 @@ try {
                   <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
                   <tbody>
                     <tr><td class="param-name">enabled</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.patch_provider_param_enabled">启用/禁用渠道</td></tr>
-                    <tr><td class="param-name">priority</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.patch_provider_param_priority">调度优先级（越高越优先）</td></tr>
                     <tr><td class="param-name">autoDispatch</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.patch_provider_param_autoDispatch">是否参与自动调度（付费渠道默认关闭，需显式指定 <code>provider</code> 才使用）</td></tr>
                   </tbody>
                 </table>
+                <div class="docs-note" data-i18n-html="docs.patch_provider_priority_gone">旧的 <code>priority</code> 字段已移除，再传会返回 400；调度顺序改由下面的 <code>/api/dispatch/rules</code> 管理。</div>
                 <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
-                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"priority"</span>: <span class="cv">10</span> }</pre>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"autoDispatch"</span>: <span class="cv">false</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-dispatch-preview">
+              <div class="docs-endpoint-header" onclick="return this.parentElement.classList.toggle('open')">
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/dispatch/preview</span>
+                <span class="desc" data-i18n="docs.dispatch_preview_desc">预演自动调度：这一单会按什么顺序试、谁会被跳过</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">for</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.dispatch_preview_param_for">目标服务；不填则按全局顺序</td></tr>
+                    <tr><td class="param-name">needPolling</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.dispatch_preview_param_polling">默认 true；为 false 时不跳过不支持轮询的渠道</td></tr>
+                  </tbody>
+                </table>
+                <div class="docs-note" data-i18n="docs.dispatch_preview_note">纯本地计算，不调用任何上游，不改任何状态。域名封禁在创建时才过滤，预演不包含。</div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>,
+  <span class="ck">"rule"</span>: { <span class="ck">"source"</span>: <span class="cs">"service"</span>, <span class="ck">"others"</span>: <span class="cs">"append"</span> },
+  <span class="ck">"candidates"</span>: [
+    { <span class="ck">"provider"</span>: <span class="cs">"outlook"</span>, <span class="ck">"eligible"</span>: <span class="cv">true</span> },
+    { <span class="ck">"provider"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"eligible"</span>: <span class="cv">false</span>, <span class="ck">"reason"</span>: <span class="cs">"cooldown"</span>,
+      <span class="ck">"cooldownReason"</span>: <span class="cs">"rate-limit"</span>, <span class="ck">"nextAvailableAt"</span>: <span class="cs">"2026-10-12T09:15:00.000Z"</span> },
+    { <span class="ck">"provider"</span>: <span class="cs">"icloud"</span>, <span class="ck">"eligible"</span>: <span class="cv">false</span>, <span class="ck">"reason"</span>: <span class="cs">"manual_only"</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.dispatch_reasons"><code>source</code>：<code>service</code> 有此服务的规则 / <code>global</code> 只有全局规则 / <code>default</code> 未保存任何规则（按 Trust 排）。<br><code>reason</code>：<code>unknown_provider</code> 规则里的名字当前未注册（如模板已停用）、<code>disabled</code>、<code>manual_only</code>（自动调度关闭且未被此服务的规则点名）、<code>no_polling</code>、<code>rate_limited</code>、<code>cooldown</code>。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-dispatch-rules">
+              <div class="docs-endpoint-header" onclick="return this.parentElement.classList.toggle('open')">
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/dispatch/rules</span>
+                <span class="desc" data-i18n="docs.dispatch_rules_desc">列出调度顺序规则（管理员）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"defaultOrder"</span>: [<span class="cs">"imap"</span>, <span class="cs">"icloud"</span>, <span class="cs">"outlook"</span>, <span class="cs">"yyds"</span>, <span class="cs">"mailtm"</span>, ...],
+  <span class="ck">"rules"</span>: [
+    { <span class="ck">"service"</span>: <span class="cs">"*"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"imap"</span>, ...], <span class="ck">"others"</span>: <span class="cs">"append"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> },
+    { <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"icloud"</span>], <span class="ck">"others"</span>: <span class="cs">"exclude"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.dispatch_rules_semantics"><code>*</code> 是全局顺序；没保存时用 <code>defaultOrder</code>（按 Trust 降序，同分按注册顺序）。规则里没列到的已注册渠道按注册顺序追加在末尾，新加的渠道不会悄悄不可达。某服务的规则列出的渠道排最前；<code>others</code> 为 <code>append</code> 时其余按全局顺序跟在后面，为 <code>exclude</code> 时只用列出的。被服务规则点名的渠道即使关闭了自动调度也会参与。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-put-dispatch-rule">
+              <div class="docs-endpoint-header" onclick="return this.parentElement.classList.toggle('open')">
+                <span class="method-tag m-put">PUT</span>
+                <span class="path">/api/dispatch/rules/:service</span>
+                <span class="desc" data-i18n="docs.put_dispatch_rule_desc">保存某服务（或 * 全局）的调度顺序（管理员）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">order</td><td class="param-type">string[]</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.put_dispatch_rule_param_order">渠道名数组，第一个最先试；不能重复；必须是已知渠道（已注册、曾注册过、或原规则里已有）</td></tr>
+                    <tr><td class="param-name">others</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.put_dispatch_rule_param_others"><code>append</code>（默认）或 <code>exclude</code>；对 <code>*</code> 恒为 append</td></tr>
+                  </tbody>
+                </table>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"icloud"</span>], <span class="ck">"others"</span>: <span class="cs">"exclude"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-delete-dispatch-rule">
+              <div class="docs-endpoint-header" onclick="return this.parentElement.classList.toggle('open')">
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/dispatch/rules/:service</span>
+                <span class="desc" data-i18n="docs.delete_dispatch_rule_desc">删除规则（管理员）；删 * 即恢复默认顺序</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
               </div>
             </div>
 
@@ -2294,7 +2415,7 @@ const code = await fetch(<span class="cs">`/api/inbox/${inbox.id}/code?wait=true
   .then(r => r.json());
 <span class="ck">// → { codes: [{ type: "numeric", value: "483921", confidence: 0.95 }] }</span>
 
-<span class="ck" data-i18n="docs.integration_step4">// 4. 上报结果（帮助调度器学习）</span>
+<span class="ck" data-i18n="docs.integration_step4">// 4. 上报结果（喂给自动封禁规则和统计）</span>
 await fetch(<span class="cs">`/api/inbox/${inbox.id}/report`</span>, {
   method: <span class="cs">'POST'</span>,
   headers: { <span class="cs">'Content-Type'</span>: <span class="cs">'application/json'</span> },
@@ -2890,7 +3011,8 @@ zh: {
 'inbox.title':'收件箱','inbox.create':'创建邮箱','inbox.batch_success':'批量成功','inbox.batch_fail':'批量失败','inbox.batch_close':'批量关闭','inbox.confirm_batch_close':'批量关闭所选邮箱?','inbox.no_messages':'暂无邮件','inbox.extract_code':'提取验证码','inbox.search':'搜索邮箱、服务…','inbox.for':'目标服务','inbox.auto':'自动','inbox.duration':'时长','inbox.alias':'别名','inbox.alias_use':'使用别名','inbox.alias_hint':'仅 Outlook 支持：发放 账号+随机标签@domain，标签由服务端生成。开启后可跳过防重复限制，让同一账号在同一服务上多次注册（仍是 1:1，需先关闭当前邮箱）。部分网站会拒绝含 + 的地址，故默认关闭。其他渠道会忽略此项。',
 'block.title':'封禁表','block.add':'添加','block.rules_title':'自动封禁规则','block.list_title':'封禁列表','block.threshold':'阈值','block.window':'窗口(h)','block.scope':'范围','block.scope_per_service':'按服务封禁','block.scope_global':'全局封禁','block.domain_level':'域名级别','block.level_2':'二级 (example.com)','block.level_3':'三级 (sub.example.com)','block.time':'封禁时间','block.reason':'原因','block.rule_service_ph':'* = 全部',
 'svc.title':'目标服务','svc.search':'搜索服务…','svc.total':'追踪服务','svc.inboxes':'累计邮箱','svc.failures':'累计失败','svc.blocks':'总封禁','svc.col_inboxes':'总邮箱','svc.col_active':'活跃','svc.col_success':'成功','svc.col_failures':'失败','svc.col_blocks':'封禁',
-'provider.title':'渠道管理','provider.trust':'Trust','provider.create_limit':'创建限流','provider.poll_limit':'轮询限流','provider.retention':'保留时间','provider.rate_usage':'限流用量','provider.success_rate':'成功率','provider.features':'功能','provider.priority':'优先级','provider.no_limit':'无限制','provider.domains':'域名','provider.stats':'统计','provider.auto_dispatch':'自动调度','provider.toggled_on':'{name} 已启用','provider.toggled_off':'{name} 已禁用','provider.priority_set':'{name} 优先级已设为 {val}','provider.dispatch_joined':'{name} 已加入自动调度','provider.dispatch_left':'{name} 已退出自动调度','provider.available_domains':'可用域名:','provider.none':'无','provider.success_count':'成功次数','provider.fail_count':'失败次数','provider.last_success':'最后成功','provider.last_fail':'最后失败','provider.last_error':'错误信息',
+'provider.title':'渠道管理','provider.trust':'Trust','provider.create_limit':'创建限流','provider.poll_limit':'轮询限流','provider.retention':'保留时间','provider.rate_usage':'限流用量','provider.success_rate':'成功率','provider.features':'功能','provider.no_limit':'无限制','provider.domains':'域名','provider.stats':'统计','provider.auto_dispatch':'自动调度','provider.toggled_on':'{name} 已启用','provider.toggled_off':'{name} 已禁用','provider.dispatch_joined':'{name} 已加入自动调度','provider.dispatch_left':'{name} 已退出自动调度',
+'dispatch.title':'调度顺序','dispatch.subtitle':'不指定 provider 的创建请求按此顺序逐个尝试，不可用的直接跳过。','dispatch.save':'保存顺序','dispatch.reset':'恢复默认','dispatch.saved':'调度顺序已保存','dispatch.reset_done':'已恢复默认顺序（按 Trust）','dispatch.source_default':'当前：默认顺序（按 Trust，未保存）','dispatch.source_global':'当前：已保存的全局顺序','dispatch.source_service':'当前：此服务的自定义顺序','dispatch.preview_ph':'输入目标服务，如 twitter.com','dispatch.preview_run':'预演此服务','dispatch.eligible':'可用','dispatch.reason.unknown_provider':'未注册','dispatch.reason.disabled':'已禁用','dispatch.reason.manual_only':'仅手动','dispatch.reason.no_polling':'不支持轮询','dispatch.reason.rate_limited':'限流中','dispatch.reason.cooldown':'冷却至','dispatch.manual_badge':'手动渠道','dispatch.svc_title':'调度顺序（此服务）','dispatch.follow_global':'跟随全局','dispatch.custom':'自定义','dispatch.others':'未列出的渠道','dispatch.others_append':'按全局顺序追加','dispatch.others_exclude':'排除','dispatch.add_provider':'添加渠道…','dispatch.remove':'移除','dispatch.up':'上移','dispatch.down':'下移','dispatch.svc_saved':'{name} 的调度顺序已保存','dispatch.svc_reset':'{name} 已改为跟随全局顺序','dispatch.preview_note':'域名封禁在创建时才过滤，预演不包含。','provider.available_domains':'可用域名:','provider.none':'无','provider.success_count':'成功次数','provider.fail_count':'失败次数','provider.last_success':'最后成功','provider.last_fail':'最后失败','provider.last_error':'错误信息',
 'outlook.title':'Outlook 账号池','outlook.import':'导入账号','outlook.total':'总账号','outlook.available':'可用','outlook.assigned':'已分配','outlook.valid_token':'有效令牌','outlook.batch_check':'批量检测','outlook.batch_renew':'批量续期','outlook.batch_delete':'批量删除','outlook.record_fail':'失败时也标记已用服务','outlook.record_fail_hint':'默认关闭。开启后，即使接收失败也会标记该账号"已用于此服务"，防止再次分配。通常无需开启。','outlook.import_placeholder':'邮箱----密码\n邮箱----密码----ClientID----refresh_token\n每行一个账号','outlook.oauth_settings':'Thunderbird 授权补全','outlook.oauth_client_id':'OAuth Client ID','outlook.oauth_client_id_ph':'应用（客户端）ID / Client ID','outlook.oauth_redirect_uri':'Redirect URI','outlook.oauth_redirect_uri_ph':'应用重定向地址','outlook.oauth_scopes':'Scopes','outlook.oauth_scopes_ph':'offline_access https://graph.microsoft.com/Mail.Read','outlook.oauth_tenant':'Tenant','outlook.oauth_tenant_ph':'common 或 tenant-id','outlook.oauth_hint':'仅在需要非 Thunderbird 预设时使用。','outlook.oauth_thunderbird_hint':'点击待补全账号的授权按钮，会使用 Thunderbird 预设启动 Microsoft 授权；外部自动化可捕获 https://localhost 重定向。','outlook.oauth_manual_hint':'普通网页无法跨域读取登录弹窗的最终地址。若服务端配置了代理，授权链接会复制到剪贴板，请用带代理的浏览器或外部自动化助手打开；完成后把最终 URL 粘贴到这里提交。','outlook.oauth_final_url_ph':'https://localhost/?code=...&state=...','outlook.submit_final_url':'提交最终 URL','outlook.advanced_custom_oauth':'高级：自定义 OAuth（可选）','outlook.pending_oauth':'待授权','outlook.no_token':'需授权','outlook.long':'长效','outlook.short':'短效','outlook.accounts':'账号列表','outlook.search':'搜索邮箱/分组…','outlook.all_status':'全部状态','outlook.valid':'有效令牌','outlook.invalid':'无效令牌','outlook.status_pending_oauth':'待 Thunderbird 授权','outlook.status_no_token':'需 Thunderbird 授权','outlook.complete_oauth':'完成 Thunderbird 授权','outlook.copy_password':'复制密码','outlook.password_copied':'密码已复制','outlook.password_missing':'账号密码为空','outlook.all_avail':'全部','outlook.avail_yes':'可用','outlook.avail_no':'已分配','outlook.all_type':'全部类型','outlook.check':'检测','outlook.renew':'续期','outlook.col_token':'令牌状态','outlook.col_assign':'分配状态','outlook.col_group':'分组','outlook.col_renewed':'续期时间','outlook.status_valid':'有效','outlook.status_invalid':'无效','outlook.status_unchecked':'未检测','outlook.assigned':'已分配','outlook.free':'空闲','outlook.empty':'账号池为空','outlook.import_first':'导入账号','outlook.unavailable':'不可用','outlook.no_data':'暂无账号，请先导入',
 'yyds.title':'YYDS Mail','yyds.import':'导入 API Key','yyds.import_placeholder':'每行一个 API Key，支持 AC-xxx----备注 格式\nAC-abcdef123456\nAC-xyz789----测试Key','yyds.total':'总 Key','yyds.active':'可用','yyds.invalid':'无效','yyds.inbox_count':'创建邮箱数','yyds.batch_check':'批量验证','yyds.batch_delete':'批量删除','yyds.accounts':'API Key 列表','yyds.wildcard':'Wildcard','yyds.daily_calls':'今日调用（UTC）','yyds.check':'验证','yyds.own_domain':'自有域名','yyds.public':'公共','yyds.status_active':'可用','yyds.status_disabled':'已停用','yyds.empty':'API Key 池为空','yyds.import_first':'导入 API Key','yyds.status_invalid':'无效','yyds.no_data':'暂无 API Key，请先导入',
 'imap.title':'IMAP 域名邮箱','imap.ready':'就绪','imap.no_active':'无活跃账号','imap.total':'总账号','imap.add_account':'添加 IMAP 账号','imap.host_ph':'IMAP 服务器 (如 imap.gmail.com)','imap.user_ph':'邮箱用户名','imap.password_ph':'邮箱密码','imap.domain_ph':'域名 (如 example.com)','imap.add_btn':'添加账号','imap.adding':'添加中...','imap.added':'添加成功','imap.add_failed':'失败: ','imap.fill_all_fields':'请填写所有必填字段','imap.accounts':'账号列表','imap.batch_delete':'批量删除','imap.confirm_delete_hint':'删除后依赖此账号的收件箱将无法拉取邮件。确定删除？','imap.confirm_batch_delete':'确认删除选中的 {n} 个账号？','imap.empty':'尚未添加 IMAP 账号','imap.add_first':'添加第一个','imap.test_ok':'IMAP 连接测试成功: ','imap.test_fail':'IMAP 连接测试失败: ','imap.tls':'TLS','imap.last_checked':'最后检测','imap.password':'密码',
@@ -2928,7 +3050,7 @@ zh: {
 // Docs - Param table headers & labels
 'docs.param':'参数','docs.type':'类型','docs.required':'必填','docs.description':'说明','docs.yes':'是','docs.no':'否','docs.path_params':'路径参数','docs.query_params':'查询参数','docs.req_body_json':'请求体 (JSON)','docs.response_200':'响应 200','docs.response_201':'响应 201',
 // Docs - Create inbox endpoint
-'docs.create_inbox_desc':'创建邮箱（自动调度或指定渠道）','docs.create_inbox_param_for':'目标服务名（如 <code>twitter.com</code>），用于避开已封禁的域名。缺失返回 <code>400</code>','docs.create_inbox_param_provider':'指定渠道名（如 <code>mailtm</code>、<code>outlook</code>），不填则自动调度','docs.create_inbox_param_domain':'指定域名','docs.create_inbox_param_subdomain':'泛子域名前缀（仅 YYDS 渠道），如 <code>team-a</code> → <code>user@team-a.example.com</code>','docs.create_inbox_param_alias':'要一个子地址别名（<code>账号+标签@域名</code>）。标签由服务端生成，不要自己传。仅 Outlook 支持，其他渠道忽略——请以响应里的 <code>address</code> 为准','docs.create_inbox_param_duration':'邮箱有效时长（秒），最小 60，最大 30 天；到期自动关闭并释放资源','docs.create_inbox_param_needPolling':'是否要求渠道支持轮询收信，默认 <code>true</code>','docs.create_inbox_note':'自动调度会按 Trust、限流状态、已封禁域名等综合评分选择最优渠道。Outlook 渠道从账号池中分配。',
+'docs.create_inbox_desc':'创建邮箱（自动调度或指定渠道）','docs.create_inbox_param_for':'目标服务名（如 <code>twitter.com</code>），用于避开已封禁的域名。缺失返回 <code>400</code>','docs.create_inbox_param_provider':'指定渠道名（如 <code>mailtm</code>、<code>outlook</code>），不填则自动调度','docs.create_inbox_param_domain':'指定域名','docs.create_inbox_param_subdomain':'泛子域名前缀（仅 YYDS 渠道），如 <code>team-a</code> → <code>user@team-a.example.com</code>','docs.create_inbox_param_alias':'要一个子地址别名（<code>账号+标签@域名</code>）。标签由服务端生成，不要自己传。仅 Outlook 支持，其他渠道忽略——请以响应里的 <code>address</code> 为准','docs.create_inbox_param_duration':'邮箱有效时长（秒），最小 60，最大 30 天；到期自动关闭并释放资源','docs.create_inbox_param_needPolling':'是否要求渠道支持轮询收信，默认 <code>true</code>','docs.create_inbox_note':'自动调度按「调度顺序」逐个尝试渠道，跳过已禁用、仅手动、限流/冷却中的；顺序可全局或按目标服务设置，用 GET /api/dispatch/preview 可预演。Outlook 渠道从账号池中分配。',
 // Docs - List inboxes endpoint
 'docs.list_inboxes_desc':'查询邮箱列表','docs.list_inboxes_param_status':'<code>active</code> 或 <code>closed</code>','docs.list_inboxes_param_provider':'按渠道名筛选','docs.list_inboxes_param_for':'按目标服务筛选',
 // Docs - Get messages endpoint
@@ -2947,10 +3069,10 @@ zh: {
 'docs.add_block_desc':'手动添加封禁','docs.add_block_param_service':'服务名','docs.add_block_param_domain':'域名','docs.add_block_param_provider':'关联渠道名','docs.add_block_param_reason':'封禁原因',
 'docs.del_block_desc':'删除封禁记录','docs.del_block_param_id':'封禁记录 ID（由列表接口返回）',
 // Docs - Provider management section
-'docs.provider_title':'渠道管理','docs.provider_desc':'查询和配置邮箱渠道（Provider）。每个渠道可独立启用/禁用和调整优先级。','docs.provider_note_title':'<strong>池化渠道说明</strong><br>','docs.provider_note_outlook':'<strong>Outlook</strong>：1:1 账号分配模式，每个邮箱独占一个 Outlook 账号，关闭后账号回池。容量 = 空闲账号数。<br>','docs.provider_note_yyds':'<strong>YYDS Mail</strong>：多 API Key 池化模式（<code>X-API-Key</code> 认证），支持固定域名和泛子域名（wildcard）。每个 key 每日 20,000 次 API 调用配额，按 key 轮转分摊负载。邮件 24 小时自动删除。上游 API 文档：<a href="https://maliapi.215.im/v1/llms.txt" target="_blank" style="color:var(--accent)">maliapi.215.im/v1/llms.txt</a>',
+'docs.provider_title':'渠道管理','docs.provider_desc':'查询和配置邮箱渠道（Provider）。每个渠道可独立启用/禁用、选择是否参与自动调度；自动调度的先后顺序由下方的调度规则接口管理。','docs.provider_note_title':'<strong>池化渠道说明</strong><br>','docs.provider_note_outlook':'<strong>Outlook</strong>：1:1 账号分配模式，每个邮箱独占一个 Outlook 账号，关闭后账号回池。容量 = 空闲账号数。<br>','docs.provider_note_yyds':'<strong>YYDS Mail</strong>：多 API Key 池化模式（<code>X-API-Key</code> 认证），支持固定域名和泛子域名（wildcard）。每个 key 每日 20,000 次 API 调用配额，按 key 轮转分摊负载。邮件 24 小时自动删除。上游 API 文档：<a href="https://maliapi.215.im/v1/llms.txt" target="_blank" style="color:var(--accent)">maliapi.215.im/v1/llms.txt</a>',
 'docs.list_providers_desc':'列出所有已注册渠道',
 'docs.get_provider_desc':'获取渠道详情（含域名、统计）',
-'docs.patch_provider_desc':'更新渠道配置','docs.patch_provider_param_enabled':'启用/禁用渠道','docs.patch_provider_param_priority':'调度优先级（越高越优先）','docs.patch_provider_param_autoDispatch':'是否参与自动调度（付费渠道默认关闭，需显式指定 <code>provider</code> 才使用）',
+'docs.patch_provider_desc':'更新渠道配置','docs.patch_provider_param_enabled':'启用/禁用渠道','docs.patch_provider_priority_gone':'旧的 <code>priority</code> 字段已移除，再传会返回 400；调度顺序改由下面的 <code>/api/dispatch/rules</code> 管理。','docs.dispatch_preview_desc':'预演自动调度：这一单会按什么顺序试、谁会被跳过','docs.dispatch_preview_param_for':'目标服务；不填则按全局顺序','docs.dispatch_preview_param_polling':'默认 true；为 false 时不跳过不支持轮询的渠道','docs.dispatch_preview_note':'纯本地计算，不调用任何上游，不改任何状态。域名封禁在创建时才过滤，预演不包含。','docs.dispatch_reasons':'<code>source</code>：<code>service</code> 有此服务的规则 / <code>global</code> 只有全局规则 / <code>default</code> 未保存任何规则（按 Trust 排）。<br><code>reason</code>：<code>unknown_provider</code> 规则里的名字当前未注册（如模板已停用）、<code>disabled</code>、<code>manual_only</code>（自动调度关闭且未被此服务的规则点名）、<code>no_polling</code>、<code>rate_limited</code>、<code>cooldown</code>。','docs.dispatch_rules_desc':'列出调度顺序规则（管理员）','docs.dispatch_rules_semantics':'<code>*</code> 是全局顺序；没保存时用 <code>defaultOrder</code>（按 Trust 降序，同分按注册顺序）。规则里没列到的已注册渠道按注册顺序追加在末尾，新加的渠道不会悄悄不可达。某服务的规则列出的渠道排最前；<code>others</code> 为 <code>append</code> 时其余按全局顺序跟在后面，为 <code>exclude</code> 时只用列出的。被服务规则点名的渠道即使关闭了自动调度也会参与。','docs.put_dispatch_rule_desc':'保存某服务（或 * 全局）的调度顺序（管理员）','docs.put_dispatch_rule_param_order':'渠道名数组，第一个最先试；不能重复；必须是已知渠道（已注册、曾注册过、或原规则里已有）','docs.put_dispatch_rule_param_others':'<code>append</code>（默认）或 <code>exclude</code>；对 <code>*</code> 恒为 append','docs.delete_dispatch_rule_desc':'删除规则（管理员）；删 * 即恢复默认顺序','docs.patch_provider_param_autoDispatch':'是否参与自动调度（付费渠道默认关闭，需显式指定 <code>provider</code> 才使用）',
 'docs.get_domains_desc':'获取渠道当前可用域名',
 // Docs - Outlook pool section
 'docs.outlook_title':'Outlook 账号池','docs.outlook_desc':'Outlook 是池化渠道：从预导入的账号中分配邮箱，而非创建新邮箱。需先通过导入接口补充账号池。',
@@ -2985,7 +3107,7 @@ zh: {
 'docs.key_update_desc':'更新密钥（改名、启用/禁用）','docs.key_update_param_name':'新备注名','docs.key_update_param_active':'启用/禁用',
 'docs.key_delete_desc':'删除密钥','docs.key_delete_param_keyHash':'密钥哈希值（从列表接口获取）',
 // Docs - Integration example section
-'docs.integration_title':'集成示例','docs.integration_typical':'典型验证码获取流程','docs.integration_step1':'// 1. 创建邮箱（自动选择最优渠道，避开封禁域名）','docs.integration_step2':'// 2. 用邮箱地址去目标服务注册/验证','docs.integration_step4':'// 4. 上报结果（帮助调度器学习）','docs.integration_curl_title':'cURL 快速测试','docs.integration_curl_wait_code':'# 等待验证码','docs.integration_curl_outlook':'# 指定 Outlook 渠道','docs.integration_curl_import':'# 导入 Outlook 账号',
+'docs.integration_title':'集成示例','docs.integration_typical':'典型验证码获取流程','docs.integration_step1':'// 1. 创建邮箱（自动选择最优渠道，避开封禁域名）','docs.integration_step2':'// 2. 用邮箱地址去目标服务注册/验证','docs.integration_step4':'// 4. 上报结果（喂给自动封禁规则和统计）','docs.integration_curl_title':'cURL 快速测试','docs.integration_curl_wait_code':'# 等待验证码','docs.integration_curl_outlook':'# 指定 Outlook 渠道','docs.integration_curl_import':'# 导入 Outlook 账号',
 // Docs - AI/LLM section
 'docs.llms_title':'AI / LLM 集成','docs.llms_desc':'提供 <code>llms.txt</code> 端点，让 AI 助手（如 ChatGPT、Claude）快速理解公开集成面与认证方式，帮助您编写接入代码。','docs.llms_endpoint_desc':'获取 AI 可读的 API 摘要（无需认证）','docs.llms_response_desc':'返回一份纯文本格式的公开 API 摘要，供 AI/LLM 快速理解外部可集成端点和认证方式。该端点<strong>无需认证</strong>，可直接访问。','docs.llms_usage_title':'<strong>使用方式：</strong>在与 AI 助手对话时，告诉它读取此端点即可快速理解 Mail Hub 的全部公开 API。例如：<br>','docs.llms_copy_btn':'复制端点 URL','docs.llms_open_btn':'在新标签页打开',
 // Docs - Example values in code blocks
@@ -3001,7 +3123,8 @@ en: {
 'inbox.title':'Inboxes','inbox.create':'Create Inbox','inbox.batch_success':'Batch Success','inbox.batch_fail':'Batch Fail','inbox.batch_close':'Batch Close','inbox.confirm_batch_close':'Close selected inboxes?','inbox.no_messages':'No messages','inbox.extract_code':'Extract Code','inbox.search':'Search inboxes, services…','inbox.for':'Target Service','inbox.auto':'Auto','inbox.duration':'Duration','inbox.alias':'Alias','inbox.alias_use':'Use alias','inbox.alias_hint':'Outlook only: hands out account+randomtag@domain, tag generated server-side. Bypasses the anti-reuse filter so one account can register at the same service repeatedly (still 1:1 — close the current inbox first). Many sites reject addresses containing +, so this is off by default. Other providers ignore it.',
 'block.title':'Block List','block.add':'Add','block.rules_title':'Auto-Block Rules','block.list_title':'Block List','block.threshold':'Threshold','block.window':'Window (h)','block.scope':'Scope','block.scope_per_service':'Per Service','block.scope_global':'Global','block.domain_level':'Domain Level','block.level_2':'2nd level (example.com)','block.level_3':'3rd level (sub.example.com)','block.time':'Blocked At','block.reason':'Reason','block.rule_service_ph':'* = all',
 'svc.title':'Services','svc.search':'Search services…','svc.total':'Tracked Services','svc.inboxes':'Total Inboxes','svc.failures':'Total Failures','svc.blocks':'Total Blocks','svc.col_inboxes':'Inboxes','svc.col_active':'Active','svc.col_success':'Success','svc.col_failures':'Failures','svc.col_blocks':'Blocks',
-'provider.title':'Providers','provider.trust':'Trust Level','provider.create_limit':'Create Limit','provider.poll_limit':'Poll Limit','provider.retention':'Retention','provider.rate_usage':'Rate Usage','provider.success_rate':'Success Rate','provider.features':'Features','provider.priority':'Priority','provider.no_limit':'Unlimited','provider.domains':'Domains','provider.stats':'Stats','provider.auto_dispatch':'Auto Dispatch','provider.toggled_on':'{name} enabled','provider.toggled_off':'{name} disabled','provider.priority_set':'{name} priority set to {val}','provider.dispatch_joined':'{name} joined auto dispatch','provider.dispatch_left':'{name} left auto dispatch','provider.available_domains':'Available domains:','provider.none':'None','provider.success_count':'Successes','provider.fail_count':'Failures','provider.last_success':'Last Success','provider.last_fail':'Last Failure','provider.last_error':'Error',
+'provider.title':'Providers','provider.trust':'Trust Level','provider.create_limit':'Create Limit','provider.poll_limit':'Poll Limit','provider.retention':'Retention','provider.rate_usage':'Rate Usage','provider.success_rate':'Success Rate','provider.features':'Features','provider.no_limit':'Unlimited','provider.domains':'Domains','provider.stats':'Stats','provider.auto_dispatch':'Auto Dispatch','provider.toggled_on':'{name} enabled','provider.toggled_off':'{name} disabled','provider.dispatch_joined':'{name} joined auto dispatch','provider.dispatch_left':'{name} left auto dispatch',
+'dispatch.title':'Dispatch order','dispatch.subtitle':'Creates without an explicit provider try these in order; unavailable ones are skipped.','dispatch.save':'Save order','dispatch.reset':'Reset to default','dispatch.saved':'Dispatch order saved','dispatch.reset_done':'Default order restored (by trust)','dispatch.source_default':'Now: default order (by trust, not saved)','dispatch.source_global':'Now: saved global order','dispatch.source_service':'Now: custom order for this service','dispatch.preview_ph':'Target service, e.g. twitter.com','dispatch.preview_run':'Preview for service','dispatch.eligible':'Eligible','dispatch.reason.unknown_provider':'Not registered','dispatch.reason.disabled':'Disabled','dispatch.reason.manual_only':'Manual only','dispatch.reason.no_polling':'No polling','dispatch.reason.rate_limited':'Rate limited','dispatch.reason.cooldown':'Cooling down until','dispatch.manual_badge':'Manual provider','dispatch.svc_title':'Dispatch order (this service)','dispatch.follow_global':'Follow global','dispatch.custom':'Custom','dispatch.others':'Unlisted providers','dispatch.others_append':'Append in global order','dispatch.others_exclude':'Exclude','dispatch.add_provider':'Add provider…','dispatch.remove':'Remove','dispatch.up':'Move up','dispatch.down':'Move down','dispatch.svc_saved':'Dispatch order for {name} saved','dispatch.svc_reset':'{name} now follows the global order','dispatch.preview_note':'Blocked domains are filtered at create time and are not previewed.','provider.available_domains':'Available domains:','provider.none':'None','provider.success_count':'Successes','provider.fail_count':'Failures','provider.last_success':'Last Success','provider.last_fail':'Last Failure','provider.last_error':'Error',
 'outlook.title':'Outlook Account Pool','outlook.import':'Import Accounts','outlook.total':'Total Accounts','outlook.available':'Available','outlook.assigned':'Assigned','outlook.valid_token':'Valid Tokens','outlook.batch_check':'Batch Check','outlook.batch_renew':'Batch Renew','outlook.batch_delete':'Batch Delete','outlook.record_fail':'Also mark used service on failure','outlook.record_fail_hint':'Off by default. When on, even failed attempts mark the account as \"used for this service\", preventing reassignment. Usually not needed.','outlook.import_placeholder':'email----password\nemail----password----ClientID----refresh_token\nOne account per line','outlook.oauth_settings':'Thunderbird Authorization','outlook.oauth_client_id':'OAuth Client ID','outlook.oauth_client_id_ph':'OAuth client application ID','outlook.oauth_redirect_uri':'Redirect URI','outlook.oauth_redirect_uri_ph':'OAuth redirect callback URL','outlook.oauth_scopes':'Scopes','outlook.oauth_scopes_ph':'offline_access https://graph.microsoft.com/Mail.Read','outlook.oauth_tenant':'Tenant','outlook.oauth_tenant_ph':'common or tenant-id','outlook.oauth_hint':'Use only when a non-Thunderbird preset is required.','outlook.oauth_thunderbird_hint':'Use the authorization button on a pending account to start Microsoft authorization with the Thunderbird preset; external automation can capture the https://localhost redirect.','outlook.oauth_manual_hint':'A normal web page cannot read the final popup URL cross-origin. When a server proxy is configured, the authorize URL is copied instead of opening this browser directly; open it in a proxied browser or automation helper, then paste the final URL here.','outlook.oauth_final_url_ph':'https://localhost/?code=...&state=...','outlook.submit_final_url':'Submit Final URL','outlook.advanced_custom_oauth':'Advanced: custom OAuth (optional)','outlook.pending_oauth':'Pending Auth','outlook.no_token':'Needs Auth','outlook.long':'Long-lived','outlook.short':'Short-lived','outlook.accounts':'Account List','outlook.search':'Search email/group…','outlook.all_status':'All Status','outlook.valid':'Valid Token','outlook.invalid':'Invalid Token','outlook.status_pending_oauth':'Pending Thunderbird authorization','outlook.status_no_token':'Needs Thunderbird authorization','outlook.complete_oauth':'Complete Thunderbird authorization','outlook.copy_password':'Copy Password','outlook.password_copied':'Password copied','outlook.password_missing':'Account password is empty','outlook.all_avail':'All','outlook.avail_yes':'Available','outlook.avail_no':'Assigned','outlook.all_type':'All Types','outlook.check':'Check','outlook.renew':'Renew','outlook.col_token':'Token','outlook.col_assign':'Assignment','outlook.col_group':'Group','outlook.col_renewed':'Renewed','outlook.status_valid':'Valid','outlook.status_invalid':'Invalid','outlook.status_unchecked':'Not checked','outlook.assigned':'Assigned','outlook.free':'Free','outlook.empty':'Outlook pool is empty','outlook.import_first':'Import accounts','outlook.unavailable':'Unavailable','outlook.no_data':'No accounts, please import first',
 'yyds.title':'YYDS Mail','yyds.import':'Import API Key','yyds.import_placeholder':'One API Key per line, supports AC-xxx----note format\nAC-abcdef123456\nAC-xyz789----TestKey','yyds.total':'Total Keys','yyds.active':'Active','yyds.invalid':'Invalid','yyds.inbox_count':'Inboxes Created','yyds.batch_check':'Batch Verify','yyds.batch_delete':'Batch Delete','yyds.accounts':'API Key List','yyds.wildcard':'Wildcard','yyds.daily_calls':'Today Calls (UTC)','yyds.check':'Verify','yyds.own_domain':'Own domain','yyds.public':'Public','yyds.status_active':'Active','yyds.status_disabled':'Disabled','yyds.empty':'YYDS pool is empty','yyds.import_first':'Import API key','yyds.status_invalid':'Invalid','yyds.no_data':'No API keys, please import first',
 'imap.title':'IMAP Domain Mail','imap.ready':'Ready','imap.no_active':'No active accounts','imap.total':'Total Accounts','imap.add_account':'Add IMAP Account','imap.host_ph':'IMAP server (e.g. imap.gmail.com)','imap.user_ph':'Email username','imap.password_ph':'Email password','imap.domain_ph':'Domain (e.g. example.com)','imap.add_btn':'Add Account','imap.adding':'Adding...','imap.added':'Added','imap.add_failed':'Failed: ','imap.fill_all_fields':'Please fill all required fields','imap.accounts':'Account List','imap.batch_delete':'Batch Delete','imap.confirm_delete_hint':'Inboxes depending on this account will not be able to fetch emails. Confirm delete?','imap.confirm_batch_delete':'Confirm delete {n} selected accounts?','imap.empty':'No IMAP accounts yet','imap.add_first':'Add the first','imap.test_ok':'IMAP connection test OK: ','imap.test_fail':'IMAP connection test FAILED: ','imap.tls':'TLS','imap.last_checked':'Last Checked','imap.password':'Password',
@@ -3039,7 +3162,7 @@ en: {
 // Docs - Param table headers & labels
 'docs.param':'Parameter','docs.type':'Type','docs.required':'Required','docs.description':'Description','docs.yes':'Yes','docs.no':'No','docs.path_params':'Path Parameters','docs.query_params':'Query Parameters','docs.req_body_json':'Request Body (JSON)','docs.response_200':'Response 200','docs.response_201':'Response 201',
 // Docs - Create inbox endpoint
-'docs.create_inbox_desc':'Create inbox (auto-dispatch or specify provider)','docs.create_inbox_param_for':'Target service name (e.g. <code>twitter.com</code>), used to avoid blocked domains. Returns <code>400</code> if missing','docs.create_inbox_param_provider':'Specify provider name (e.g. <code>mailtm</code>, <code>outlook</code>), auto-dispatched if omitted','docs.create_inbox_param_domain':'Specify a domain','docs.create_inbox_param_subdomain':'Wildcard subdomain prefix (YYDS only), e.g. <code>team-a</code> → <code>user@team-a.example.com</code>','docs.create_inbox_param_alias':'Request a sub-address alias (<code>account+tag@domain</code>). The tag is generated server-side — do not supply one. Outlook only; other providers ignore it, so read <code>address</code> from the response','docs.create_inbox_param_duration':'Inbox validity duration in SECONDS (min 60, max 30 days); the inbox auto-closes at expiry','docs.create_inbox_param_needPolling':'Whether polling support is required for this inbox, default <code>true</code>','docs.create_inbox_note':'Auto-dispatch scores providers by trust level, rate-limit status, blocked domains, etc. to choose the optimal provider. Outlook accounts are allocated from the pool.',
+'docs.create_inbox_desc':'Create inbox (auto-dispatch or specify provider)','docs.create_inbox_param_for':'Target service name (e.g. <code>twitter.com</code>), used to avoid blocked domains. Returns <code>400</code> if missing','docs.create_inbox_param_provider':'Specify provider name (e.g. <code>mailtm</code>, <code>outlook</code>), auto-dispatched if omitted','docs.create_inbox_param_domain':'Specify a domain','docs.create_inbox_param_subdomain':'Wildcard subdomain prefix (YYDS only), e.g. <code>team-a</code> → <code>user@team-a.example.com</code>','docs.create_inbox_param_alias':'Request a sub-address alias (<code>account+tag@domain</code>). The tag is generated server-side — do not supply one. Outlook only; other providers ignore it, so read <code>address</code> from the response','docs.create_inbox_param_duration':'Inbox validity duration in SECONDS (min 60, max 30 days); the inbox auto-closes at expiry','docs.create_inbox_param_needPolling':'Whether polling support is required for this inbox, default <code>true</code>','docs.create_inbox_note':'Auto-dispatch walks the dispatch order one provider at a time, skipping disabled, manual-only and rate-limited/cooling providers; the order is set globally or per target service, and GET /api/dispatch/preview shows it. Outlook accounts are allocated from the pool.',
 // Docs - List inboxes endpoint
 'docs.list_inboxes_desc':'List inboxes','docs.list_inboxes_param_status':'<code>active</code> or <code>closed</code>','docs.list_inboxes_param_provider':'Filter by provider name','docs.list_inboxes_param_for':'Filter by target service',
 // Docs - Get messages endpoint
@@ -3058,10 +3181,10 @@ en: {
 'docs.add_block_desc':'Manually add a block','docs.add_block_param_service':'Service name','docs.add_block_param_domain':'Domain','docs.add_block_param_provider':'Associated provider name','docs.add_block_param_reason':'Block reason',
 'docs.del_block_desc':'Delete a block record','docs.del_block_param_id':'Block record ID (returned by list endpoint)',
 // Docs - Provider management section
-'docs.provider_title':'Provider Management','docs.provider_desc':'Query and configure email providers. Each provider can be independently enabled/disabled and prioritized.','docs.provider_note_title':'<strong>Pool-based Providers</strong><br>','docs.provider_note_outlook':'<strong>Outlook</strong>: 1:1 account assignment — each inbox exclusively uses one Outlook account; released back to pool on close. Capacity = free account count.<br>','docs.provider_note_yyds':'<strong>YYDS Mail</strong>: Multi key pool mode (<code>X-API-Key</code> auth), supports fixed domains and wildcard subdomains. Each key has 20,000 daily API call quota, rotated to balance load. Mail auto-deletes after 24h. Upstream API docs: <a href="https://maliapi.215.im/v1/llms.txt" target="_blank" style="color:var(--accent)">maliapi.215.im/v1/llms.txt</a>',
+'docs.provider_title':'Provider Management','docs.provider_desc':'Query and configure email providers. Each provider can be enabled/disabled and opted in or out of auto-dispatch; the order auto-dispatch tries them in is managed by the dispatch rule endpoints below.','docs.provider_note_title':'<strong>Pool-based Providers</strong><br>','docs.provider_note_outlook':'<strong>Outlook</strong>: 1:1 account assignment — each inbox exclusively uses one Outlook account; released back to pool on close. Capacity = free account count.<br>','docs.provider_note_yyds':'<strong>YYDS Mail</strong>: Multi key pool mode (<code>X-API-Key</code> auth), supports fixed domains and wildcard subdomains. Each key has 20,000 daily API call quota, rotated to balance load. Mail auto-deletes after 24h. Upstream API docs: <a href="https://maliapi.215.im/v1/llms.txt" target="_blank" style="color:var(--accent)">maliapi.215.im/v1/llms.txt</a>',
 'docs.list_providers_desc':'List all registered providers',
 'docs.get_provider_desc':'Get provider details (includes domains & stats)',
-'docs.patch_provider_desc':'Update provider configuration','docs.patch_provider_param_enabled':'Enable/disable the provider','docs.patch_provider_param_priority':'Dispatch priority (higher = preferred)','docs.patch_provider_param_autoDispatch':'Whether to participate in auto-dispatch (paid providers default to off, must specify <code>provider</code> explicitly)',
+'docs.patch_provider_desc':'Update provider configuration','docs.patch_provider_param_enabled':'Enable/disable the provider','docs.patch_provider_priority_gone':'The old <code>priority</code> field was removed and now returns 400; dispatch order is managed through <code>/api/dispatch/rules</code> below.','docs.dispatch_preview_desc':'Dry-run auto-dispatch: the order this request would try and who gets skipped','docs.dispatch_preview_param_for':'Target service; omit for the global order','docs.dispatch_preview_param_polling':'Default true; false keeps providers without polling support','docs.dispatch_preview_note':'Local computation only: nothing upstream is called and nothing changes. Blocked domains are filtered at create time and are not previewed.','docs.dispatch_reasons':'<code>source</code>: <code>service</code> a rule for this service exists / <code>global</code> only the global rule / <code>default</code> nothing saved (ordered by trust).<br><code>reason</code>: <code>unknown_provider</code> the rule names a provider that is not registered right now (e.g. a disabled template), <code>disabled</code>, <code>manual_only</code> (auto-dispatch off and not named by this service’s rule), <code>no_polling</code>, <code>rate_limited</code>, <code>cooldown</code>.','docs.dispatch_rules_desc':'List dispatch order rules (admin)','docs.dispatch_rules_semantics':'<code>*</code> is the global order; without one, <code>defaultOrder</code> applies (trust descending, registration order for ties). Registered providers a rule does not list are appended in registration order, so a newly added provider never becomes silently unreachable. A service rule’s providers come first; with <code>others</code> = <code>append</code> the rest follow in global order, with <code>exclude</code> only the listed ones are used. A provider named by a service rule takes part even with auto-dispatch off.','docs.put_dispatch_rule_desc':'Save the dispatch order for a service (or * for global) (admin)','docs.put_dispatch_rule_param_order':'Provider names, first tried first; no duplicates; every name must be known (registered, ever registered, or already in this rule)','docs.put_dispatch_rule_param_others':'<code>append</code> (default) or <code>exclude</code>; always append for <code>*</code>','docs.delete_dispatch_rule_desc':'Delete a rule (admin); deleting * restores the default order','docs.patch_provider_param_autoDispatch':'Whether to participate in auto-dispatch (paid providers default to off, must specify <code>provider</code> explicitly)',
 'docs.get_domains_desc':'Get currently available domains for a provider',
 // Docs - Outlook pool section
 'docs.outlook_title':'Outlook Account Pool','docs.outlook_desc':'Outlook is a pool-based provider: it assigns inboxes from pre-imported accounts rather than creating new ones. Accounts must be imported first.',
@@ -3095,7 +3218,7 @@ en: {
 'docs.key_update_desc':'Update key (rename, enable/disable)','docs.key_update_param_name':'New label','docs.key_update_param_active':'Enable/disable',
 'docs.key_delete_desc':'Delete a key','docs.key_delete_param_keyHash':'Key hash (obtained from list endpoint)',
 // Docs - Integration example section
-'docs.integration_title':'Integration Example','docs.integration_typical':'Typical Code Extraction Flow','docs.integration_step1':'// 1. Create inbox (auto-selects optimal provider, avoids blocked domains)','docs.integration_step2':'// 2. Use inbox address to register/verify on the target service','docs.integration_step4':'// 4. Report result (helps the dispatcher learn)','docs.integration_curl_title':'cURL Quick Test','docs.integration_curl_wait_code':'# Wait for code','docs.integration_curl_outlook':'# Specify Outlook provider','docs.integration_curl_import':'# Import Outlook accounts',
+'docs.integration_title':'Integration Example','docs.integration_typical':'Typical Code Extraction Flow','docs.integration_step1':'// 1. Create inbox (auto-selects optimal provider, avoids blocked domains)','docs.integration_step2':'// 2. Use inbox address to register/verify on the target service','docs.integration_step4':'// 4. Report result (feeds auto-block rules and statistics)','docs.integration_curl_title':'cURL Quick Test','docs.integration_curl_wait_code':'# Wait for code','docs.integration_curl_outlook':'# Specify Outlook provider','docs.integration_curl_import':'# Import Outlook accounts',
 // Docs - AI/LLM section
 'docs.llms_title':'AI / LLM Integration','docs.llms_desc':'Provides the <code>llms.txt</code> endpoint so AI assistants (e.g. ChatGPT, Claude) can quickly understand the public integration surface and authentication method to help you write integration code.','docs.llms_endpoint_desc':'Get AI-readable API summary (no auth required)','docs.llms_response_desc':'Returns a plain-text public API summary for AI/LLM to quickly understand the externally available endpoints and auth method. This endpoint <strong>does not require authentication</strong> and can be accessed directly.','docs.llms_usage_title':'<strong>Usage:</strong> When chatting with an AI assistant, tell it to read this endpoint to quickly understand Mail Hub\'s full public API. Example:<br>','docs.llms_copy_btn':'Copy Endpoint URL','docs.llms_open_btn':'Open in New Tab',
 // Docs - Example values in code blocks
@@ -4668,6 +4791,10 @@ async function loadServiceDetail(name) {
         <div id="svc-d-inboxes-pager"></div>
       </div>
       <div class="panel" style="margin-top:12px">
+        <div class="panel-header"><span class="panel-title">${esc(t('dispatch.svc_title'))}</span></div>
+        <div id="svc-dispatch" style="padding:12px 20px 16px"><div class="dispatch-note">${t('common.loading') || 'Loading...'}</div></div>
+      </div>
+      <div class="panel" style="margin-top:12px">
         <div class="panel-header"><span class="panel-title" style="color:var(--rose)">Failures (${failures.length})</span></div>
         <table>
           <thead><tr><th data-i18n="common.provider">渠道</th><th data-i18n="common.domain">域名</th><th data-i18n="common.time">时间</th></tr></thead>
@@ -4684,6 +4811,7 @@ async function loadServiceDetail(name) {
         <div id="svc-d-blocks-pager"></div>
       </div>`;
     delete _pageState['svc-d-inboxes']; delete _pageState['svc-d-failures']; delete _pageState['svc-d-blocks'];
+    loadServiceDispatch(name);
     paginateTable('svc-d-inboxes', inboxes, rows => {
       document.getElementById('svc-d-inboxes').innerHTML = rows.length ? rows.map(i => `<tr>
         <td class="mono">${esc(i.address)}</td>
@@ -4716,6 +4844,7 @@ async function loadProviders() {
     const data = await api('/providers');
     const grid = document.getElementById('provider-grid');
     const providers = (data.providers || []).filter(p => p.name && p.displayName);
+    _providerMeta = new Map(providers.map(p => [p.name, p]));
     const poolNames = new Set(['outlook', 'yyds', 'imap']);
     const groups = [
       { title: _lang === 'zh' ? '池化渠道' : 'Pool providers', items: providers.filter(p => poolNames.has(p.name)) },
@@ -4766,8 +4895,6 @@ async function loadProviders() {
               <label class="provider-inline-check">
                 <input type="checkbox" ${p.autoDispatch ? 'checked' : ''} onchange="setAutoDispatch(${jsArg(p.name)},this.checked)"> ${t('provider.auto_dispatch')}
               </label>
-              <label>${t('provider.priority')}</label>
-              <input class="provider-priority-input" type="number" value="${escAttr(p.priority)}" onchange="setPriority(${jsArg(p.name)},this.value)">
             </div>
           </div>
           <div id="pex-${escAttr(p.name)}"></div>
@@ -4779,6 +4906,7 @@ async function loadProviders() {
         <div class="provider-section-grid">${group.items.map(renderCard).join('')}</div>
       </section>
     `).join('');
+    loadDispatchOrder();
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -4791,10 +4919,177 @@ async function toggleProvider(name, enabled) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-async function setPriority(name, val) {
+// ─── Dispatch order ───
+// The global list is edited in place; a row's eligibility comes from the
+// preview endpoint, which is a pure read (no upstream calls).
+let _dispatchOrder = [];
+let _dispatchCandidates = new Map();
+let _providerMeta = new Map();
+
+function dispatchReasonChip(c) {
+  if (!c) return '';
+  if (c.eligible) return `<span class="dispatch-chip ok"><span class="dot"></span>${t('dispatch.eligible')}</span>`;
+  let label = t('dispatch.reason.' + c.reason) || c.reason;
+  if (c.reason === 'cooldown' && c.nextAvailableAt) label += ' ' + fmtTime(c.nextAvailableAt, 'short');
+  return `<span class="dispatch-chip off">${esc(label)}</span>`;
+}
+
+function dispatchRowLabel(name) {
+  const meta = _providerMeta.get(name);
+  const manual = meta && meta.autoDispatch === false ? `<span class="dispatch-chip warn">${t('dispatch.manual_badge')}</span>` : '';
+  const tier = meta ? `<span class="badge ${meta.tier === 'paid' ? 'badge-paid' : 'badge-free'}">${meta.tier === 'paid' ? 'Paid' : 'Free'}</span>` : '';
+  return `<span>${esc(meta?.displayName || name)}</span><span class="cell-sub mono">${esc(name)}</span>${tier}${manual}`;
+}
+
+function renderOrderRows(order, candidates, actions) {
+  if (!order.length) return `<div class="empty-row">${t('common.no_data')}</div>`;
+  return order.map((name, i) => {
+    const c = candidates.get(name);
+    return `<div class="dispatch-row ${c && !c.eligible ? 'ineligible' : ''}">
+      <span class="dispatch-rank">${i + 1}</span>
+      <span class="dispatch-name">${dispatchRowLabel(name)}${dispatchReasonChip(c)}</span>
+      ${actions ? `<span class="dispatch-actions">${actions(name, i, order.length)}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function moveInList(list, i, delta) {
+  const j = i + delta;
+  if (j < 0 || j >= list.length) return;
+  [list[i], list[j]] = [list[j], list[i]];
+}
+
+async function loadDispatchOrder() {
+  if (!_isAdmin) { document.getElementById('dispatch-panel').style.display = 'none'; return; }
   try {
-    await api(`/providers/${name}`, { method: 'PATCH', body: JSON.stringify({ priority: parseInt(val) }) });
-    toast(t('provider.priority_set', {name, val}));
+    const preview = await api('/dispatch/preview');
+    _dispatchOrder = preview.candidates.map(c => c.provider);
+    _dispatchCandidates = new Map(preview.candidates.map(c => [c.provider, c]));
+    document.getElementById('dispatch-source').textContent = t('dispatch.source_' + preview.rule.source);
+    renderDispatchOrder();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function renderDispatchOrder() {
+  document.getElementById('dispatch-list').innerHTML = renderOrderRows(_dispatchOrder, _dispatchCandidates, (name, i, n) =>
+    `<button class="btn btn-sm btn-icon icon-soft-blue" title="${escAttr(t('dispatch.up'))}" ${i === 0 ? 'disabled' : ''} onclick="moveInList(_dispatchOrder,${i},-1);renderDispatchOrder()">↑</button>
+     <button class="btn btn-sm btn-icon icon-soft-blue" title="${escAttr(t('dispatch.down'))}" ${i === n - 1 ? 'disabled' : ''} onclick="moveInList(_dispatchOrder,${i},1);renderDispatchOrder()">↓</button>`);
+}
+
+async function saveDispatchOrder() {
+  try {
+    await api('/dispatch/rules/*', { method: 'PUT', body: JSON.stringify({ order: _dispatchOrder }) });
+    toast(t('dispatch.saved'));
+    addActivity('blue', t('dispatch.saved'));
+    loadDispatchOrder();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function resetDispatchOrder() {
+  try {
+    await api('/dispatch/rules/*', { method: 'DELETE' });
+    toast(t('dispatch.reset_done'));
+    loadDispatchOrder();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function runDispatchPreview() {
+  const svc = document.getElementById('dispatch-preview-for').value.trim();
+  const el = document.getElementById('dispatch-preview-result');
+  if (!svc) { el.innerHTML = ''; return; }
+  try {
+    const preview = await api(`/dispatch/preview?for=${encodeURIComponent(svc)}`);
+    const cands = new Map(preview.candidates.map(c => [c.provider, c]));
+    el.innerHTML = `<div class="dispatch-sub" style="padding:0 0 8px">${targetEl(svc)} · ${esc(t('dispatch.source_' + preview.rule.source))}${preview.rule.others === 'exclude' ? ' · ' + esc(t('dispatch.others_exclude')) : ''}</div>
+      <div class="dispatch-list" style="padding:0">${renderOrderRows(preview.candidates.map(c => c.provider), cands, null)}</div>
+      <div class="dispatch-note">${esc(t('dispatch.preview_note'))}</div>`;
+  } catch (e) { el.innerHTML = `<div class="dispatch-note" style="color:var(--rose)">${esc(e.message)}</div>`; }
+}
+
+// Per-service rule editor, rendered inside the service detail panel.
+let _svcRule = null;
+
+async function loadServiceDispatch(name) {
+  const el = document.getElementById('svc-dispatch');
+  if (!el) return;
+  try {
+    if (!_providerMeta.size) {
+      const data = await api('/providers');
+      _providerMeta = new Map((data.providers || []).filter(p => p.name).map(p => [p.name, p]));
+    }
+    const [rules, preview] = await Promise.all([api('/dispatch/rules'), api(`/dispatch/preview?for=${encodeURIComponent(name)}`)]);
+    const own = (rules.rules || []).find(r => r.service === name);
+    _svcRule = {
+      service: name,
+      custom: !!own,
+      order: own ? [...own.order] : [],
+      others: own ? own.others : 'append',
+      candidates: new Map(preview.candidates.map(c => [c.provider, c])),
+      effective: preview.candidates.map(c => c.provider),
+      source: preview.rule.source,
+    };
+    renderServiceDispatch();
+  } catch (e) { el.innerHTML = `<div class="dispatch-note" style="color:var(--rose)">${esc(e.message)}</div>`; }
+}
+
+function renderServiceDispatch() {
+  const r = _svcRule;
+  const el = document.getElementById('svc-dispatch');
+  if (!r || !el) return;
+  const listed = new Set(r.order);
+  const addable = [..._providerMeta.keys()].filter(n => !listed.has(n));
+  const editor = r.custom ? `
+    <div class="dispatch-list" style="padding:12px 0 4px">${renderOrderRows(r.order, r.candidates, (name, i, n) =>
+      `<button class="btn btn-sm btn-icon icon-soft-blue" title="${escAttr(t('dispatch.up'))}" ${i === 0 ? 'disabled' : ''} onclick="moveInList(_svcRule.order,${i},-1);renderServiceDispatch()">↑</button>
+       <button class="btn btn-sm btn-icon icon-soft-blue" title="${escAttr(t('dispatch.down'))}" ${i === n - 1 ? 'disabled' : ''} onclick="moveInList(_svcRule.order,${i},1);renderServiceDispatch()">↓</button>
+       ${iconBtn('x', t('dispatch.remove'), `_svcRule.order.splice(${i},1);renderServiceDispatch()`, 'amber')}`)}</div>
+    <div class="dispatch-toolbar" style="padding:8px 0 0">
+      <select id="svc-dispatch-add" onchange="if(this.value){_svcRule.order.push(this.value);renderServiceDispatch()}">
+        <option value="">${esc(t('dispatch.add_provider'))}</option>
+        ${addable.map(n => `<option value="${escAttr(n)}">${esc(_providerMeta.get(n)?.displayName || n)} (${esc(n)})</option>`).join('')}
+      </select>
+      <span class="cell-sub">${esc(t('dispatch.others'))}:</span>
+      <label class="dispatch-radio"><input type="radio" name="svc-others" value="append" ${r.others === 'append' ? 'checked' : ''} onchange="_svcRule.others='append'"> ${esc(t('dispatch.others_append'))}</label>
+      <label class="dispatch-radio"><input type="radio" name="svc-others" value="exclude" ${r.others === 'exclude' ? 'checked' : ''} onchange="_svcRule.others='exclude'"> ${esc(t('dispatch.others_exclude'))}</label>
+      <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="return saveServiceDispatch()">${esc(t('dispatch.save'))}</button>
+    </div>` : `
+    <div class="dispatch-list" style="padding:12px 0 4px">${renderOrderRows(r.effective, r.candidates, null)}</div>`;
+  el.innerHTML = `
+    <div class="dispatch-sub" style="padding:0">
+      <span class="dispatch-mode">
+        <button class="${r.custom ? '' : 'active'}" onclick="return setServiceDispatchMode(false)">${esc(t('dispatch.follow_global'))}</button>
+        <button class="${r.custom ? 'active' : ''}" onclick="return setServiceDispatchMode(true)">${esc(t('dispatch.custom'))}</button>
+      </span>
+      <span>${esc(t('dispatch.source_' + r.source))}</span>
+    </div>
+    ${editor}
+    <div class="dispatch-note">${esc(t('dispatch.preview_note'))}</div>`;
+}
+
+async function setServiceDispatchMode(custom) {
+  const r = _svcRule;
+  if (!r) return;
+  if (!custom) {
+    if (r.source === 'service') {
+      try {
+        await api(`/dispatch/rules/${encodeURIComponent(r.service)}`, { method: 'DELETE' });
+        toast(t('dispatch.svc_reset', { name: r.service }));
+      } catch (e) { toast(e.message, 'error'); return; }
+    }
+    return loadServiceDispatch(r.service);
+  }
+  r.custom = true;
+  if (!r.order.length) r.order = r.effective.filter(n => _providerMeta.has(n));
+  renderServiceDispatch();
+}
+
+async function saveServiceDispatch() {
+  const r = _svcRule;
+  if (!r) return;
+  try {
+    await api(`/dispatch/rules/${encodeURIComponent(r.service)}`, { method: 'PUT', body: JSON.stringify({ order: r.order, others: r.others }) });
+    toast(t('dispatch.svc_saved', { name: r.service }));
+    loadServiceDispatch(r.service);
   } catch (e) { toast(e.message, 'error'); }
 }
 

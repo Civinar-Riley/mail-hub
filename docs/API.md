@@ -381,7 +381,6 @@ Returns all registered email providers with their capabilities and configuration
       "tier": "free",
       "trustLevel": 3,
       "enabled": true,
-      "priority": 10,
       "autoDispatch": true,
       "features": {
         "customUsername": true,
@@ -431,6 +430,39 @@ Returns all registered email providers with their capabilities and configuration
 ```
 
 **Errors**: 404, 502
+
+---
+
+### GET /api/dispatch/preview — Dry-run Auto-dispatch
+
+The order a `POST /api/inbox` without `provider` would try providers in, and
+why each one is or is not eligible right now. Pure local computation: nothing
+upstream is called and nothing changes.
+
+**Query**: `for` (target service, optional — omit for the global order),
+`needPolling` (default `true`; `false` keeps providers that cannot poll).
+
+**Response 200**:
+```json
+{
+  "service": "twitter.com",
+  "rule": { "source": "service", "others": "append" },
+  "candidates": [
+    { "provider": "outlook", "eligible": true },
+    { "provider": "mailtm", "eligible": false, "reason": "cooldown",
+      "cooldownReason": "rate-limit", "nextAvailableAt": "2026-10-12T09:15:00.000Z" },
+    { "provider": "icloud", "eligible": false, "reason": "manual_only" }
+  ],
+  "note": "Blocked-domain filtering happens at create time and is not previewed."
+}
+```
+
+`rule.source` is `service` (a rule for this service exists), `global` (only
+the `*` rule) or `default` (nothing saved; trust order). `reason` is one of
+`unknown_provider` (the rule names a provider that is not registered right
+now, e.g. a disabled template), `disabled`, `manual_only` (auto-dispatch off
+and not named by this service's rule), `no_polling`, `rate_limited`,
+`cooldown`.
 
 ---
 
@@ -537,23 +569,78 @@ All endpoints below require admin authentication (token matches `API_SECRET`). N
 
 ## Provider Configuration (Admin)
 
+### Dispatch order
+
+Auto-dispatch walks an explicit, operator-owned order and uses the first
+provider that passes every gate (enabled, allowed to auto-dispatch, not
+rate-limited or cooling down, create succeeds). There is no score.
+
+- `*` is the global order. Without one, the **default order** applies:
+  `trustLevel` descending, registration order for ties.
+- Registered providers a rule does not list are appended in registration
+  order, so a provider added later is never silently unreachable.
+- A service rule's providers come first. `others: "append"` lets the rest
+  follow in global order; `others: "exclude"` uses only the listed ones.
+- A provider named by a service rule takes part even when its auto-dispatch is
+  off (`*` does not count as naming it).
+- A rule may keep names that are not registered right now (a disabled template
+  keeps its position and comes back when re-enabled); the preview reports them
+  as `unknown_provider`.
+
+#### GET /api/dispatch/rules — List Rules
+
+**Response 200**:
+```json
+{
+  "defaultOrder": ["imap", "icloud", "outlook", "yyds", "mailtm", "..."],
+  "rules": [
+    { "service": "*", "order": ["outlook", "imap", "..."], "others": "append", "updatedAt": "2026-10-12T09:00:00Z" },
+    { "service": "twitter.com", "order": ["outlook", "icloud"], "others": "exclude", "updatedAt": "2026-10-12T09:05:00Z" }
+  ]
+}
+```
+
+#### PUT /api/dispatch/rules/:service — Save a Rule
+
+**Request**:
+```json
+{ "order": ["outlook", "icloud"], "others": "exclude" }
+```
+
+`order`: non-empty, no duplicates, every name known (registered, ever
+registered, or already in this rule). `others`: `append` (default) or
+`exclude`; forced to `append` for `*`. The service must not be an example
+domain.
+
+**Response 200**: the stored rule. **Errors**: 400 (validation), 403.
+
+#### DELETE /api/dispatch/rules/:service — Delete a Rule
+
+Idempotent. Deleting `*` restores the default order.
+
+**Response 200**: `{ "ok": true }`
+
+---
+
 ### PATCH /api/providers/:name — Update Provider
 
 **Request** (JSON — all fields optional):
 ```json
 {
   "enabled": true,
-  "priority": 10,
   "autoDispatch": false
 }
 ```
 
 **Response 200**:
 ```json
-{ "ok": true, "enabled": true, "priority": 10, "autoDispatch": false }
+{ "ok": true, "enabled": true, "autoDispatch": false }
 ```
 
-**Errors**: 400 (no valid fields), 404
+Sending the removed `priority` field returns **400**; dispatch order lives in
+`/api/dispatch/rules`.
+
+**Errors**: 400 (no valid fields, or `priority` present), 404
 
 ---
 

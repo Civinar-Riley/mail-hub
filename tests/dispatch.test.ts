@@ -88,7 +88,7 @@ describe('dispatcher provider selection', () => {
     registry.unregister('fake');
   });
 
-  it('does not fallback to disabled paired providers', async () => {
+  it('does not fall back to a disabled provider when the leader is rate-limited', async () => {
     const mailtm = new FakeProvider({ name: 'mailtm', displayName: 'Mail.tm' });
     const mailgw = new FakeProvider({ name: 'mailgw', displayName: 'Mail.gw' });
     registry.register(mailtm);
@@ -344,7 +344,7 @@ describe('dispatcher provider selection', () => {
     registry.unregister('local-fail');
   });
 
-  it('fetches domains once per auto-dispatch, reusing the scoring result', async () => {
+  it('fetches domains once per auto-dispatch', async () => {
     const provider = new FakeProvider({ rateLimit: { createPerMinute: 10, pollPerMinute: 2 } });
     const db = getDb();
     db.prepare(`UPDATE provider_config SET enabled = 0`).run();

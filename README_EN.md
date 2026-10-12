@@ -10,7 +10,7 @@ Multi-provider temporary email aggregation — unified API across 10+ email prov
 ## Features
 
 - **10+ Providers** — unified REST API, no need to integrate each provider individually
-- **Smart Dispatch** — auto-selects best provider by trust level, rate limits, and blocked domains
+- **Visible Dispatch Order** — without an explicit provider, tries providers in the order you set (globally or per target service), skipping disabled/rate-limited/cooling ones; `/api/dispatch/preview` dry-runs it
 - **Custom Providers** — add REST or GraphQL providers via Web UI, zero coding
 - **Code Extraction** — auto-detect numeric, alphanumeric, and link-type verification codes
 - **Pool Management** — Outlook / YYDS Mail / IMAP domain email / iCloud aliases at scale
@@ -99,13 +99,13 @@ Shipped as built-in templates. Enable, disable, edit, or delete from the **Custo
 
 ### Hardcoded Providers
 
-These are built into the code (not templates). Configurable via the **Provider Management** page, with dedicated management UIs (sidebar entries):
+These are built into the code (not templates). Enable/disable, auto-dispatch participation and dispatch order are configured on the **Provider Management** page, with dedicated management UIs (sidebar entries):
 
 | Provider | Type | Description |
 |----------|------|-------------|
 | Outlook | Account Pool | Import Outlook accounts with automatic Microsoft Graph, Outlook REST, or IMAP XOAUTH2 detection (including Thunderbird public OAuth tokens); complete missing authorization, 1:1 assignment, returned to pool on close; optional `+` sub-address alias; the account page can read the whole mailbox, grouped by lease |
 | YYDS Mail | API Key Pool | Import keys, round-robin rotation, 20,000 calls/day per key |
-| IMAP Domain Email | Account Pool | Connect your own domain via IMAP with catch-all; one mailbox backs many inboxes, with name-shaped generated addresses; highest trust level |
+| IMAP Domain Email | Account Pool | Connect your own domain via IMAP with catch-all; one mailbox backs many inboxes, with name-shaped generated addresses; leads the default dispatch order |
 | iCloud Aliases | Address pool | Mints `@icloud.com` addresses through iCloud+ Hide My Email; they forward to your own mailbox and are sorted by recipient. Addresses are recycled, and a background task tops the pool up within Apple's rate limit |
 
 ## Custom Providers
