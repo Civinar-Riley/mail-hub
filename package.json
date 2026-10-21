@@ -10,7 +10,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "tsx watch --include \"src/public/**\" src/index.ts",

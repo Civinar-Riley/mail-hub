@@ -28,7 +28,7 @@ function resolvesInLock(from: string, name: string): boolean {
 }
 
 describe('package-lock.json', () => {
-  // The hanabi deploy (npm 10.9) and the Docker build (node:20, npm 10.8) both
+  // Node 22 installs (npm 10) and the Docker build (node:24, npm 11) both
   // run `npm ci`. npm 11 can write a lockfile that leaves a peer dependency
   // unplaced, which npm 10 rejects as "Missing: <pkg> from lock file"; both then
   // fall back to an unlocked `npm install` that ignores the lockfile entirely.

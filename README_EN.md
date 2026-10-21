@@ -45,7 +45,7 @@ docker run -d \
 
 ### Node.js (Development)
 
-Requires Node.js 18+:
+Requires Node.js 22+ (24 LTS recommended):
 
 ```bash
 git clone https://github.com/ydddp/mail-hub.git
