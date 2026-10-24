@@ -4,7 +4,7 @@ import { on } from '../core/actions.js';
 import { api } from '../core/api.js';
 import { t } from '../core/i18n.js';
 import { setCount } from '../core/motion.js';
-import { emptyStateRow, esc, fmtTime, iconBtn, inboxStatusBadge, targetEl, toast } from '../core/util.js';
+import { emptyStateRow, esc, fmtTime, iconBtn, inboxStatusBadge, renderLoading, targetEl, toast } from '../core/util.js';
 import { _isAdmin } from '../shell/session.js';
 import { loadServiceDispatch } from './providers.js';
 // ─── Services ───
@@ -12,6 +12,7 @@ let _allServices = [];
 
 async function loadServices() {
   if (!_isAdmin) return;
+  renderLoading('svc-list', 8);
   try {
     const data = await api('/services');
     const s = data.summary || {};

@@ -1,6 +1,6 @@
-/* Pixel decoration: the host sets the size; the canvas scales whole cells up. */
-.px{position:relative;display:block;overflow:hidden;pointer-events:none}
-.px > canvas{position:absolute;top:0;left:0;image-rendering:pixelated}
+/* Loading skeleton: the host sets the size and the cell colour; js/core/loading-blocks.js draws. */
+.loading-blocks{position:relative;display:block;overflow:hidden;pointer-events:none}
+.loading-blocks > canvas{position:absolute;top:0;left:0}
 /* Empty / loading / failure: one block replaces the table body and its header. */
 td.empty-cell{height:auto;padding:0}
 table:has(td.empty-cell) thead{display:none}

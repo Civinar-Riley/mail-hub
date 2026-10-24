@@ -5,7 +5,7 @@ import { CHECKED, on } from '../core/actions.js';
 import { api } from '../core/api.js';
 import { hideDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
-import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, toast, toggleSwitch } from '../core/util.js';
+import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, renderLoading, toast, toggleSwitch } from '../core/util.js';
 // ─── Blocks ───
 let _allBlocks = [];
 
@@ -28,6 +28,7 @@ async function loadBlocks() {
   let url = '/blocks?';
   if (service) url += `service=${encodeURIComponent(service)}&`;
   if (domain) url += `domain=${encodeURIComponent(domain)}&`;
+  renderLoading('block-list', 6);
   try {
     const data = await api(url);
     _allBlocks = data.blocks || [];
@@ -86,6 +87,7 @@ function renderRuleTable(rows) {
 }
 
 async function loadBlockRules() {
+  renderLoading('rule-list', 8);
   try {
     const [data, provData] = await Promise.all([api('/block-rules'), api('/providers')]);
     const sel = document.getElementById('rule-provider');

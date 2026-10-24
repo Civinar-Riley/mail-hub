@@ -6,7 +6,7 @@ import { api } from '../core/api.js';
 import { confirmDialog, hideDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
 import { setCount } from '../core/motion.js';
-import { esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, setTone, toast } from '../core/util.js';
+import { esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, renderLoading, setTone, toast } from '../core/util.js';
 import { collapseOwnMessage, deferredLoading, enterInboxDetail, fadeOutDetail, msgRow, msgTableHead, renderDetailError, renderMessage } from './inboxes.js';
 // ─── iCloud aliases ───
 // 'degraded' is not a failure: the cookie expired, so no new addresses can be
@@ -15,6 +15,9 @@ import { collapseOwnMessage, deferredLoading, enterInboxDetail, fadeOutDetail, m
 // that is not happening.
 const ICLOUD_STATUS_BADGE = { active: 'badge', degraded: 'badge badge-warn', error: 'badge badge-bad' };
 async function loadIcloud() {
+  // Both lists are loaded one after the other; both show the skeleton from the start.
+  renderLoading('icloud-account-list', 5);
+  renderLoading('icloud-address-list', 5);
   await loadIcloudPoolSettings();
   await loadIcloudAccounts();
   await loadIcloudAddresses();
@@ -64,6 +67,7 @@ let _icloudAccounts = [];
 let _icloudAddresses = [];
 
 async function loadIcloudAccounts() {
+  renderLoading('icloud-account-list', 5);
   try {
     _icloudAccounts = (await api('/icloud/accounts')).accounts || [];
     setCount(document.getElementById('icloud-total'), _icloudAccounts.length);
@@ -124,6 +128,7 @@ function renderIcloudAccounts() {
 }
 
 async function loadIcloudAddresses() {
+  renderLoading('icloud-address-list', 5);
   try {
     _icloudAddresses = (await api('/icloud/addresses')).addresses || [];
     setCount(document.getElementById('icloud-free'), _icloudAddresses.filter(r => r.state === 'free').length);

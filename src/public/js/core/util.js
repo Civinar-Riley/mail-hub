@@ -68,10 +68,11 @@ function renderEmpty(tbodyId, colspan, message, ctaText, ctaAction) {
   if (!tbody) return;
   tbody.innerHTML = emptyStateRow(colspan, message, ctaText, ctaAction);
 }
+/** First load only: a list already on screen stays until the new rows replace it. */
 function renderLoading(tbodyId, colspan) {
   const tbody = document.getElementById(tbodyId);
-  if (!tbody) return;
-  tbody.innerHTML = `<tr><td class="empty-cell" colspan="${colspan}"><div class="px loading-blocks" data-px="blocks" aria-hidden="true"></div></td></tr>`;
+  if (!tbody || tbody.rows.length) return;
+  tbody.innerHTML = `<tr><td class="empty-cell" colspan="${colspan}"><div class="loading-blocks" aria-hidden="true"></div></td></tr>`;
 }
 let _toastTimer = null;
 function toast(msg, type = 'success') {

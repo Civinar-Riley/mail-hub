@@ -5,7 +5,7 @@ import { CHECKED, VALUE, on } from '../core/actions.js';
 import { api } from '../core/api.js';
 import { hideDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
-import { copyValue, emptyStateRow, esc, escAttr, fmtTime, iconBtn, toast } from '../core/util.js';
+import { copyValue, emptyStateRow, esc, escAttr, fmtTime, iconBtn, renderLoading, toast } from '../core/util.js';
 import { _isAdmin } from '../shell/session.js';
 // ─── Keys ───
 let _allKeys = [];
@@ -65,6 +65,7 @@ function renderKeyTable(rows) {
 
 async function loadKeys() {
   if (!_isAdmin) return;
+  renderLoading('key-list', 7);
   try {
     const data = await api('/keys');
     _allKeys = data.keys || [];

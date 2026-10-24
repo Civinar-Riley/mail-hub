@@ -7,7 +7,7 @@ import { api, beginPoolJob, restorePoolJob } from '../core/api.js';
 import { hideDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
 import { setCount } from '../core/motion.js';
-import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, toast, toggleSwitch } from '../core/util.js';
+import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, renderLoading, toast, toggleSwitch } from '../core/util.js';
 // ─── YYDS Mail ───
 async function loadYyds() {
   await Promise.all([loadYydsStats(), loadYydsAccounts(), restorePoolJob('yyds')]);
@@ -53,6 +53,7 @@ function renderYdTable(rows) {
 }
 
 async function loadYydsAccounts() {
+  renderLoading('yd-account-list', 9);
   try {
     const data = await api('/yyds/accounts');
     if ((data.accounts || []).length === 0) {

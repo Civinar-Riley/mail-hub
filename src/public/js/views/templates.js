@@ -5,7 +5,7 @@ import { api } from '../core/api.js';
 import { confirmDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
 import { motionDelay, setCount } from '../core/motion.js';
-import { emptyStateRow, esc, iconBtn, toast, toggleSwitch } from '../core/util.js';
+import { emptyStateRow, esc, iconBtn, renderLoading, toast, toggleSwitch } from '../core/util.js';
 // ─── Template Providers ───
 let _tplEditing = null;
 
@@ -81,6 +81,7 @@ function renderTplTable(rows) {
 }
 
 async function loadTemplates() {
+  renderLoading('tpl-list', 6);
   try {
     const data = await api('/template-providers');
     _allTemplates = data.providers || [];

@@ -5,7 +5,7 @@ import { api } from '../core/api.js';
 import { confirmDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
 import { setCount } from '../core/motion.js';
-import { esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, setTone } from '../core/util.js';
+import { esc, escAttr, fmtTime, iconBtn, renderEmpty, renderLoadError, renderLoading, setTone } from '../core/util.js';
 async function loadImap() {
   try {
     const s = await api('/imap/stats');
@@ -18,6 +18,7 @@ async function loadImap() {
   loadImapAccounts();
 }
 async function loadImapAccounts() {
+  renderLoading('imap-account-list', 9);
   try {
     const data = await api('/imap/accounts');
     if ((data.accounts || []).length === 0) {

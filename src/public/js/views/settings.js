@@ -3,7 +3,7 @@ import { on } from '../core/actions.js';
 import { api } from '../core/api.js';
 import { confirmDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
-import { esc, fmtBytes, fmtTime, iconBtn, renderEmpty, toast } from '../core/util.js';
+import { esc, fmtBytes, fmtTime, iconBtn, renderEmpty, renderLoading, toast } from '../core/util.js';
 import { _isAdmin } from '../shell/session.js';
 // ─── Settings ───
 let _settingsSaveTimer = null;
@@ -109,6 +109,7 @@ async function triggerBackup() {
 }
 
 async function loadBackups() {
+  renderLoading('backup-list', 4);
   const data = await api('/admin/backups');
   const rows = data.backups || [];
   if (rows.length === 0) {

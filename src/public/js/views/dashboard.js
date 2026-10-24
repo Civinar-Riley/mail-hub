@@ -4,12 +4,13 @@ import { _pageState, paginateTable } from '../components/pagination.js';
 import { on } from '../core/actions.js';
 import { api } from '../core/api.js';
 import { t } from '../core/i18n.js';
-import { emptyStateRow, esc, escAttr, iconBtn, inboxStatusBadge, shortTime, targetEl, toast } from '../core/util.js';
+import { emptyStateRow, esc, escAttr, iconBtn, inboxStatusBadge, renderLoading, shortTime, targetEl, toast } from '../core/util.js';
 import { getCode, loadInboxes, viewInbox, viewMailbox } from './inboxes.js';
 // ─── Dashboard ───
 let _allDashInboxes = [];
 async function loadDashboard() {
   loadActivity();
+  renderLoading('dash-inboxes', 6);
   try {
     // "最近邮箱" is a history panel — closed inboxes belong here. What it must
     // NOT do is walk the whole table: apiAllInboxes() pages until it has every

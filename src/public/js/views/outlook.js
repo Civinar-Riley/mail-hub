@@ -248,8 +248,7 @@ async function loadOutlookAccounts() {
   if (status) url += `status=${status}&`;
   if (avail) url += `available=${avail}&`;
   if (type) url += `type=${type}&`;
-  // First visit only: a list already on screen stays until the new one replaces it.
-  if (!document.getElementById('ol-account-list').rows.length) renderLoading('ol-account-list', 8);
+  renderLoading('ol-account-list', 8);
   try {
     const data = await api(url);
     _allOlAccounts = data.accounts || [];

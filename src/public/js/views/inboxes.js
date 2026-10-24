@@ -8,7 +8,7 @@ import { api, apiAllInboxes } from '../core/api.js';
 import { hideDialog, showDialog } from '../core/dialog.js';
 import { t } from '../core/i18n.js';
 import { motionDelay, prefersReducedMotion } from '../core/motion.js';
-import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, inboxStatusBadge, targetEl, toast } from '../core/util.js';
+import { emptyStateRow, esc, escAttr, fmtTime, iconBtn, inboxStatusBadge, renderLoading, targetEl, toast } from '../core/util.js';
 import { loadDashboard } from './dashboard.js';
 // ─── Inboxes ───
 let _allInboxes = [];
@@ -41,6 +41,7 @@ async function loadInboxes() {
   let url = '/inboxes?';
   if (status) url += `status=${status}&`;
   if (provider) url += `provider=${provider}&`;
+  renderLoading('inbox-list', 7);
   try {
     const data = await apiAllInboxes(url);
     _allInboxes = data.inboxes || [];

@@ -10,7 +10,7 @@ import { actions, initActions, on } from './core/actions.js';
 import { api } from './core/api.js';
 import { answerConfirm, hideDialog, showDialog } from './core/dialog.js';
 import { applyTheme, t, toggleLang, toggleTheme } from './core/i18n.js';
-import { initPixelDecorations } from './core/pixel.js';
+import { initLoadingBlocks } from './core/loading-blocks.js';
 import { clickById, copyText, debounce, getToken, selectText, toast } from './core/util.js';
 import { initNavInd, switchViewWithTransition, syncNavInd } from './shell/nav-indicator.js';
 import { setNavRail } from './shell/nav-rail.js';
@@ -77,7 +77,7 @@ document.addEventListener('keydown', e => {
 });
 window.addEventListener('resize', () => closeRowMenu(true));
 document.querySelector('.main')?.addEventListener('scroll', () => closeRowMenu(true), { passive: true });
-initPixelDecorations();
+initLoadingBlocks();
 
 // ─── Button loading state ───
 document.addEventListener('click', e => {
