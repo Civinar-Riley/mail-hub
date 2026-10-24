@@ -1,0 +1,228 @@
+/* ─── Page header ─── */
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.page-title-area{display:flex;align-items:baseline;gap:12px;flex-shrink:0}
+.page-title{font-size:var(--text-2xl);font-weight:var(--fw-semibold);line-height:1.25;letter-spacing:-.2px}
+.header-actions{display:flex;gap:8px;align-items:center}
+/* Counts line: "label number" pairs joined by a middle dot. */
+.page-header:has(> .page-stats){align-items:baseline;flex-wrap:wrap;gap:8px 24px}
+/* Each item's " · " sits in the column gap to its left. The item that starts a line
+   (the first, or one that wrapped) puts its dot outside the box, where it is clipped,
+   so no line opens with a separator. */
+.page-stats{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:24px;margin-left:auto;overflow:hidden;color:var(--text2);font-size:var(--text-md)}
+.page-stats > span{position:relative}
+.page-stats > span::before{content:'\00b7';position:absolute;right:100%;width:24px;text-align:center;color:var(--text3)}
+.page-stats b{font-weight:var(--fw-medium);color:var(--text)}
+.page-stats .is-warn b{color:var(--amber)}
+.page-stats .is-bad,.page-stats .is-bad b{color:var(--rose)}
+.page-stats .is-warn:not(:has(b)){color:var(--amber)}
+.page-stats .is-note{color:var(--text3)}
+
+/* ─── Stat cards ─── */
+
+/* ─── Panel ─── */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
+.panel-header{min-height:48px;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.panel-title{font-size:var(--text-md);font-weight:var(--fw-semibold);display:flex;align-items:center;gap:8px}
+.panel-title .indicator{width:6px;height:6px;border-radius:50%;background:var(--emerald)}
+.panel-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+.panel-actions select{height:var(--ctl-h-sm);padding:0 8px;font-size:var(--ctl-fs-sm)}
+
+/* ─── Table ─── */
+table{width:100%;border-collapse:collapse}
+th{text-align:start;height:40px;padding:0 16px;font-size:var(--text-md);color:var(--text2);font-weight:var(--fw-medium);white-space:nowrap;border-bottom:1px solid var(--border)}
+td{height:44px;padding:8px 16px;border-top:1px solid var(--border);font-size:var(--text-md);transition:background-color var(--dur-fast) var(--ease-out)}
+tbody tr:first-child > td{border-top:0}
+th.cell-end,td.cell-end{text-align:right}
+th:has(> input[type=checkbox]),td:has(> input[type=checkbox]){width:40px;padding-right:0}
+tr:hover td{background:var(--row-hover)}
+.mono{font-family:var(--font-mono);font-size:var(--text-base);color:var(--text);letter-spacing:-.2px}
+.target{display:inline-flex;align-items:center;gap:5px;color:var(--text)}
+.target-icon{width:18px;height:18px;border-radius:4px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:var(--fw-semibold);color:var(--text3)}
+.time{font-size:var(--text-base);color:var(--text2);font-family:var(--font-mono);white-space:nowrap}
+
+/* ─── Badges ─── */
+/* Grey is the normal state; colour only for done, attention, failure. */
+.badge{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:6px;font-size:var(--text-sm);font-weight:var(--fw-medium);line-height:1;white-space:nowrap;background:var(--bg3);color:var(--text2)}
+.badge-warn{background:var(--amber-dim);color:var(--amber)}
+.badge-bad{background:var(--rose-dim);color:var(--rose)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-pulse{background:var(--emerald);box-shadow:0 0 0 0 color-mix(in oklab,var(--emerald) 40%,transparent);animation:pulse 2s infinite}
+.dot-gray{background:var(--text3)}
+.dot-ok{background:var(--emerald)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--emerald) 40%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ─── Buttons ─── */
+a.btn{text-decoration:none}
+.btn{position:relative;height:var(--ctl-h-md);padding:0 var(--ctl-px-md);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:var(--ctl-fs-md);font-weight:var(--fw-medium);font-family:inherit;transition:background-color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-quick) var(--ease-out),opacity var(--dur-fast) var(--ease-out);background:var(--bg3);color:var(--text2);display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.btn:hover{background:var(--bg3);border-color:var(--border2);color:var(--text)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:disabled,.btn[disabled]{opacity:var(--disabled-opacity);cursor:not-allowed;pointer-events:none}
+.btn-primary{background:var(--emerald);border-color:var(--emerald);color:var(--accent-contrast);font-weight:var(--fw-semibold)}
+.btn-primary:hover{background:var(--emerald-hover);border-color:var(--emerald-hover)}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:focus-visible{box-shadow:var(--focus-ring)}
+.btn-danger{background:transparent;border:1px solid var(--rose);color:var(--rose)}
+.btn-danger:hover{background:var(--rose-dim)}
+.btn-danger:focus-visible{box-shadow:0 0 0 3px color-mix(in oklab,var(--rose) 35%,transparent)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-sm{height:var(--ctl-h-sm);padding:0 var(--ctl-px-sm);font-size:var(--ctl-fs-sm)}
+.btn-lg{height:var(--ctl-h-lg);padding:0 var(--ctl-px-lg);font-size:var(--ctl-fs-lg)}
+.btn-icon{width:var(--ctl-h-md);height:var(--ctl-h-md);padding:0;border-radius:var(--radius-sm)}
+.btn-icon.btn-sm{width:var(--ctl-h-sm);height:var(--ctl-h-sm)}
+.btn-icon svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-icon.btn-sm{width:var(--ctl-h-sm);height:var(--ctl-h-sm)}
+.btn-icon.btn-sm svg{width:16px;height:16px}
+.btn-icon{background:transparent;border-color:transparent;color:var(--text2)}
+.btn-icon:hover{background:var(--bg3);border-color:transparent;color:var(--text)}
+.btn-icon.btn-danger{background:transparent;border-color:transparent;color:var(--text2)}
+.btn-icon.btn-danger:hover{background:var(--rose-dim);border-color:transparent;color:var(--rose)}
+.key-secret{display:flex;align-items:center;gap:4px;min-width:240px}
+.key-secret-value{max-width:320px;font-size:var(--text-sm);cursor:pointer;user-select:all;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text2)}
+.key-secret-value:hover{color:var(--text)}
+.btn[data-loading]{pointer-events:none;opacity:.7;color:transparent}
+.btn[data-loading]::after{content:'';position:absolute;width:14px;height:14px;border:2px solid var(--text2);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+.btn-primary[data-loading]::after{border-color:var(--accent-contrast);border-top-color:transparent}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nav-icon.spinning svg{animation:spin .6s ease-in-out}
+
+/* ─── Toggle (terminal-switch style) ─── */
+.toggle{position:relative;width:34px;height:20px;cursor:pointer;display:inline-block;vertical-align:middle}
+.toggle input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.toggle-track{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border);border-radius:5px;transition:background .18s ease,border-color .18s ease}
+.toggle input:checked+.toggle-track{background:var(--emerald);border-color:var(--emerald)}
+.toggle-thumb{position:absolute;top:50%;left:0;width:12px;height:12px;background:var(--text2);border-radius:3px;transform:translate(3px,-50%);transition:transform .18s cubic-bezier(.4,0,.2,1),background .18s ease;pointer-events:none;will-change:transform}
+.toggle input:checked~.toggle-thumb{transform:translate(19px,-50%);background:var(--accent-contrast)}
+.toggle:hover .toggle-track{border-color:var(--border2)}
+.toggle:hover input:checked+.toggle-track{border-color:var(--emerald)}
+.toggle input:focus-visible+.toggle-track{box-shadow:var(--focus-ring)}
+/* A switch in a table cell, optionally followed by its label or a status badge. */
+.toggle-cell{display:inline-flex;align-items:center;gap:8px}
+
+/* ─── Form ─── */
+.form-row{display:flex;gap:12px;align-items:flex-end;padding:16px 20px;flex-wrap:wrap}
+.form-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px}
+.form-group.auto-width{flex:0 0 auto;min-width:auto}
+.form-group.wide{flex:2}
+/* Settings forms: label, 32px control, then the condition or consequence in meta text. */
+.settings-fields{display:grid;grid-template-columns:1fr;gap:12px;padding:16px}
+.settings-fields + .settings-fields{border-top:1px solid var(--border)}
+.settings-fields .form-group{min-width:0}
+@media(min-width:1024px){.settings-fields{grid-template-columns:1fr 1fr}.settings-fields .span-all{grid-column:1 / -1}}
+.switch-field{height:var(--ctl-h-md);display:flex;align-items:center}
+.input-action{display:flex;gap:8px}
+.input-action input{flex:1;min-width:0}
+.field-hint{font-size:var(--text-sm);color:var(--text2)}
+.field-hint:empty{display:none}
+.settings-shortcuts{padding:12px 16px}
+.shortcut-row{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:var(--text-base)}
+.shortcut-help{margin-top:8px;font-size:var(--text-sm);color:var(--text3)}
+.key-cap{min-width:40px;text-align:center;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);font-size:var(--text-sm);font-weight:var(--fw-medium)}
+.shortcut-help .key-cap{min-width:0;padding:1px 4px;font-weight:inherit}
+.copy-field{width:100%;user-select:all}
+.version-cell{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+/* A checkbox and its words, clickable as one. */
+.check-label{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:var(--text-base);color:var(--text2)}
+.form-group label{font-size:var(--text-sm);color:var(--text2);font-weight:var(--fw-medium)}
+/* :where() keeps the old specificity while checkboxes keep their native size
+   (a 32px checkbox grew every selectable table row to 55px). */
+input[type=checkbox],input[type=radio]{accent-color:var(--emerald)}
+input:where(:not([type=checkbox],[type=radio])),select{background:var(--bg2);border:1px solid var(--border);color:var(--text);height:var(--ctl-h-md);padding:0 12px;border-radius:var(--radius-sm);font-size:var(--ctl-fs-md);font-family:inherit;outline:none;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out),opacity var(--dur-fast) var(--ease-out)}
+input:focus,select:focus{border-color:var(--emerald);box-shadow:var(--focus-ring)}
+input:disabled,select:disabled{opacity:var(--disabled-opacity);cursor:not-allowed}
+input::placeholder{color:var(--text3)}
+select{cursor:pointer}
+.cell-sub{font-size:var(--text-base);color:var(--text3);margin-top:2px}
+.textarea{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:var(--radius-sm);font-size:var(--ctl-fs-md);font-family:var(--font-mono);outline:none;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out);resize:vertical}
+.textarea:focus{border-color:var(--emerald);box-shadow:var(--focus-ring)}
+
+/* ─── Search ─── */
+.search-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);height:var(--ctl-h-md);padding:0 12px 0 32px;font-size:var(--ctl-fs-md);color:var(--text);font-family:inherit;outline:none;width:240px;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235c6370' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center}
+.search-box:focus{border-color:var(--emerald);box-shadow:var(--focus-ring);background-color:var(--bg2)}
+.search-box::placeholder{color:var(--text3)}
+
+/* ─── Grid layouts ─── */
+.grid-2col{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.grid-2col>*{min-width:0}
+@media(max-width:1100px){.grid-2col{grid-template-columns:1fr}}
+
+
+/* ─── Collapsible panel ─── */
+.collapsible > .panel-header{cursor:pointer;user-select:none;justify-content:flex-start}
+.collapsible > .panel-header > .panel-actions{margin-left:auto}
+.collapsible > .panel-header:hover{background:var(--row-hover)}
+.collapsible.collapsed > .panel-header{border-bottom-color:transparent}
+.collapse-caret{display:inline-block;flex-shrink:0;width:7px;height:7px;margin:0 4px 0 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform var(--dur-fast) var(--ease-out);opacity:.6}
+/* data-fold flips on click, so the caret turns with the click rather than when the fold ends. */
+.collapsible.collapsed .collapse-caret,.collapsible[data-fold="closed"] .collapse-caret{transform:rotate(-45deg)}
+.collapsible[data-fold="open"] .collapse-caret{transform:rotate(45deg)}
+/* Config card: one card holds the low-frequency forms; its header is a row
+   of tabs whose 2px underline slides to the current one (syncCardTabs). */
+.card-tabs{position:relative;flex:1;display:flex;align-self:stretch;min-width:0;margin:-8px 0;overflow-x:auto;scrollbar-width:none}
+/* Tabs split the row evenly and centre their label; on a narrow screen they keep their
+   content width and the row scrolls. The underline follows the label, not the cell. */
+.card-tab{flex:1 1 0;min-width:max-content;display:flex;align-items:center;justify-content:center;height:48px;padding:0 16px;border:0;background:none;font:inherit;font-size:var(--text-md);font-weight:var(--fw-medium);color:var(--text2);white-space:nowrap;cursor:pointer;transition:color var(--dur-fast) var(--ease-out)}
+.card-tab:hover,.card-tab[aria-selected="true"]{color:var(--text)}
+.card-tab:focus-visible{outline-offset:-2px;border-radius:4px}
+.collapsible[data-fold="closed"] .card-tab[aria-selected="true"]:not(:hover){color:var(--text2)}
+.card-tab-ind{position:absolute;left:0;bottom:0;width:0;height:2px;border-radius:1px;background:var(--emerald);pointer-events:none;transition:opacity var(--dur-fast) var(--ease-out)}
+.collapsible[data-fold="closed"] .card-tab-ind{opacity:0}
+.fold-toggle{flex-shrink:0;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;border-radius:var(--radius-sm);background:none;color:var(--text2);cursor:pointer}
+.fold-toggle:hover{background:var(--bg3);color:var(--text)}
+.fold-toggle .collapse-caret{margin:0 0 0 0}
+.config-pane[hidden]{display:none}
+/* A .panel used as a pane gives up its own frame and title row to the card's. */
+.config-pane.panel{margin:0;border:0;border-radius:0;background:none}
+.config-pane.panel > .panel-header{min-height:0;padding:16px 16px 0;border:0;justify-content:flex-end}
+.config-pane.panel > .panel-header > .panel-title{display:none}
+.config-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.config-stack > .panel{margin-bottom:0}
+.fold-pad{padding:16px}
+/* A pane lays out its own rows: forms inside drop their panel padding. */
+.config-pane > .form-row{padding:0}
+.config-pane > .form-row + .form-row{margin-top:12px}
+/* One form, one tab: the label keeps its width at the left instead of spanning the row. */
+.card-tab:only-of-type{flex:0 0 auto;padding-left:0}
+.pane-help{margin-bottom:16px;font-size:var(--text-base);color:var(--text2);line-height:1.9}
+/* Status text takes the free space, so the primary button ends the row on the right. */
+.pane-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:12px}
+.pane-actions > .form-hint{margin:0 auto 0 0}
+.pane-actions > .check-row{align-items:center}
+.pane-actions > .check-row input{margin-top:0}
+.form-hint{margin:6px 0 0;font-size:var(--text-sm);color:var(--text2);line-height:1.5}
+.check-row{display:flex;align-items:flex-start;gap:8px;cursor:pointer;user-select:none;color:var(--text)}
+.check-row input{margin-top:4px;flex-shrink:0}
+.collapsible.collapsed > *:not(.panel-header){display:none}
+
+/* ─── Scope tabs ─── */
+/* The indicator is a real element rather than a background on .active, so it
+   can slide between tabs. syncScopeIndicator() measures and places it; the tab
+   click moves it immediately, before the fetch resolves, so the switch responds
+   at once and the new content fades in when it arrives. */
+.scope-tabs{position:relative;display:inline-flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:3px}
+.scope-ind{position:absolute;top:3px;bottom:3px;left:0;width:0;background:var(--bg2);border-radius:calc(var(--radius) - 3px);box-shadow:0 1px 2px rgba(0,0,0,.07);transition:left var(--dur-spring-smooth) var(--spring-smooth),width var(--dur-spring-smooth) var(--spring-smooth);pointer-events:none}
+.scope-tab{position:relative;z-index:1;border:none;background:none;color:var(--text3);font-size:var(--text-base);padding:4px 12px;border-radius:calc(var(--radius) - 3px);cursor:pointer;font-family:inherit;transition:color var(--dur-fast) var(--ease-out)}
+.scope-tab:hover{color:var(--text2)}
+.scope-tab.active{color:var(--text);font-weight:var(--fw-medium)}
+
+/* ─── Filter row ─── */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-row input,.filter-row select{min-width:120px}
+.view > .filter-row{margin-bottom:16px}
+
+/* ─── Layout helpers that replaced inline styles ─── */
+.panel-body{padding:16px 20px}
+.panel-body > .form-row{padding:0}
+.check-field{height:var(--ctl-h-md)}
+.check-hint{margin-left:21px}
+.form-hint.flush{margin:0}
+.form-group.narrow{min-width:80px}
+.num-input{width:70px}
+.port-input{width:90px}
+.input-action.wrap{flex-wrap:wrap;align-items:center}
+.input-action.wrap input{flex:1 1 260px}
+.filter-row > .header-actions{margin-left:auto}
+.copyable{cursor:pointer;user-select:all}
+.pager-total{margin-left:2px}
+.pager-size{margin-left:8px}

@@ -1,0 +1,235 @@
+/* ─── Provider cards ─── */
+.provider-grid{display:flex;flex-direction:column;gap:20px}
+.provider-section{display:flex;flex-direction:column;gap:10px}
+.provider-section-title{display:flex;align-items:center;gap:8px;font-size:var(--text-sm);font-weight:var(--fw-semibold);color:var(--text3)}
+.provider-section-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--text3)}
+.provider-section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+.provider-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.provider-card{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:16px;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out),opacity var(--dur-fast) var(--ease-out);position:relative}
+.provider-card:hover{border-color:var(--border2)}
+.provider-card.disabled{opacity:.45}
+.provider-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);gap:10px}
+.provider-top-end{display:flex;align-items:center;gap:8px}
+.provider-name{font-weight:var(--fw-semibold);font-size:var(--text-md);display:flex;align-items:center;gap:8px}
+.provider-stat{display:flex;justify-content:space-between;font-size:var(--text-base);color:var(--text2);padding:4px 0;gap:10px}
+.provider-stat strong{color:var(--text2);font-weight:var(--fw-medium)}
+.provider-metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.provider-feature-line{font-size:var(--text-sm);color:var(--text3);margin-top:10px;line-height:1.5;overflow-wrap:anywhere}
+.provider-actions-row{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.provider-config-row{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.provider-config-row label{font-size:var(--text-sm);color:var(--text3)}
+.provider-inline-check{display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none}
+/* ─── Dispatch order ─── */
+.dispatch-sub{padding:10px 20px 0;font-size:var(--text-sm);color:var(--text3);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.dispatch-list{margin-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column}
+.dispatch-row{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 20px;border-bottom:1px solid var(--border);background:transparent;font-size:var(--text-base)}
+.dispatch-row.ineligible{opacity:.6}
+.dispatch-skip{font-size:var(--text-sm);color:var(--amber)}
+.dispatch-rank{width:24px;text-align:right;color:var(--text3);font-variant-numeric:tabular-nums;font-size:var(--text-sm)}
+.dispatch-name{font-weight:var(--fw-medium);display:flex;align-items:center;gap:8px;min-width:0;flex:1;flex-wrap:wrap}
+.dispatch-actions{display:flex;gap:4px;margin-left:auto}
+.dispatch-actions .btn-icon:disabled{opacity:.3;cursor:default}
+/* Drag-to-reorder: the grip is the only drag origin, so rows still scroll
+   under a finger and buttons on the row keep working. Lift and settle share
+   one duration/curve: lift fades the shadow in, settle slides the row into
+   its slot and fades the shadow back out. */
+.dispatch-grip{display:inline-flex;align-items:center;justify-content:center;width:18px;height:22px;color:var(--text3);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;flex-shrink:0;border-radius:4px}
+.dispatch-grip svg{width:14px;height:14px;fill:currentColor}
+.dispatch-grip:hover{color:var(--text2);background:var(--border)}
+.dispatch-list.sorting,.dispatch-list.sorting .dispatch-grip{cursor:grabbing}
+.dispatch-list.sorting .dispatch-row{user-select:none;-webkit-user-select:none}
+.dispatch-list.sorting .dispatch-row:not(.lifted){transition:transform var(--dur-fast) var(--ease-out)}
+.dispatch-row.lifted,.dispatch-row.settling{position:relative;z-index:2;background:var(--bg2);box-shadow:var(--shadow-overlay)}
+.dispatch-row.lifted{transition:box-shadow var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out)}
+.dispatch-row.settling{transition:transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),background var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.dispatch-row.settling.settled{box-shadow:none;background:transparent}
+.dispatch-toolbar{display:flex;gap:8px;align-items:center;padding:12px 20px 16px;flex-wrap:wrap}
+.dispatch-toolbar input{max-width:280px}
+.dispatch-toolbar select{max-width:240px}
+.dispatch-preview-result{padding:0 20px 16px}
+/* The preview and the per-service editor sit inside an already padded box. */
+.dispatch-preview-result .dispatch-sub{padding:0 0 8px}
+.dispatch-preview-result .dispatch-list{margin-top:0}
+.dispatch-preview-result .dispatch-row,#svc-dispatch .dispatch-row{padding-left:8px;padding-right:8px}
+#svc-dispatch{padding:12px 20px 16px}
+#svc-dispatch .dispatch-sub{padding:0}
+#svc-dispatch .dispatch-list{margin-top:12px}
+#svc-dispatch .dispatch-toolbar{padding:8px 0 0}
+.dispatch-save{margin-left:auto}
+.dispatch-note{font-size:var(--text-sm);color:var(--text3);margin-top:8px}
+.dispatch-mode{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.dispatch-mode button{padding:5px 12px;font-size:var(--text-sm);background:var(--bg2);color:var(--text2);border:none;cursor:pointer}
+.dispatch-mode button.active{background:var(--bg3);color:var(--text);font-weight:var(--fw-medium)}
+.dispatch-radio{display:inline-flex;align-items:center;gap:4px;font-size:var(--text-sm);color:var(--text2);cursor:pointer}
+.trust-bar{display:flex;gap:3px;align-items:center}
+.trust-pip{width:14px;height:4px;border-radius:2px;background:var(--border)}
+.trust-pip.filled{background:var(--text2)}
+.provider-extra{margin-top:10px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:var(--text-base)}
+.provider-extra .domain-tag{display:inline-block;font-family:var(--font-mono);font-size:var(--text-base);color:var(--text);margin:2px 12px 2px 0}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-wrap table{min-width:720px}
+/* A short table (key-value, backups, docs parameters) keeps its natural width. */
+.table-wrap.fit table{min-width:0}
+/* An empty list is one sentence: it fits the screen and sits in its middle. */
+.table-wrap table:has(td.empty-cell){min-width:0}
+
+#ol-account-list{user-select:none;-webkit-user-select:none}
+
+/* ─── Activity ─── */
+.activity-panel{padding:16px 20px}
+.activity-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:var(--text-base);color:var(--text2);align-items:flex-start}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.ad-green{background:var(--emerald)}
+.ad-rose{background:var(--rose)}
+.ad-blue{background:var(--text2)}
+.ad-amber{background:var(--amber)}
+.activity-time{color:var(--text3);font-family:var(--font-mono);font-size:var(--text-sm);margin-left:auto;white-space:nowrap}
+.activity-hl{color:var(--text);font-weight:var(--fw-medium)}
+
+/* ─── Message viewer ─── */
+.msg-viewer{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:12px}
+.msg-header{border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px}
+.msg-header h3{font-size:var(--text-lg);font-weight:var(--fw-semibold);margin-bottom:4px}
+.msg-header p{font-size:var(--text-base);color:var(--text3)}
+/* Height is set by fitMsgBody() — content height, capped at ~65vh. Deliberately
+   no max-height: it would also cap the resize handle, and the handle is the
+   whole point of being able to drag a long mail open. */
+.msg-body{font-size:var(--text-md);line-height:1.6;min-height:120px;overflow:auto;resize:vertical}
+.msg-body iframe{width:100%;border:none;background:#fff;border-radius:4px;display:block}
+
+/* ─── Inboxes: list mode ⇄ detail mode ───
+   The detail panel used to render BELOW a create form and a 20-row table, so
+   opening an inbox put its messages off screen and every click ended in a
+   scroll. The two are modes of one page instead: whichever you are looking at
+   gets the whole width, and the crumb is the way back. No media query, no
+   cramped columns, and the scroll position of the list is restored on return. */
+.view.detail-mode .list-only { display: none; }
+.view:not(.detail-mode) .detail-only { display: none; }
+/* display:none cannot be transitioned, so the side being left has to fade out
+   BEFORE the swap — otherwise the hard cut is the loudest thing on screen and
+   swamps whatever the incoming panel is doing. .leaving is worn by the view for
+   one beat, then the mode flips. */
+.view.leaving .list-only,
+.view.leaving .detail-only{opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity var(--dur-quick) var(--ease-out),transform var(--dur-quick) var(--ease-out)}
+
+.crumb{display:inline-flex;align-items:center;gap:8px;background:none;border:none;color:var(--text3);font-family:inherit;font-size:var(--text-md);padding:6px 2px;margin-bottom:10px;cursor:pointer;transition:color var(--dur-fast) var(--ease-out)}
+.crumb:hover{color:var(--text)}
+.crumb-arrow{transition:transform var(--dur-fast) var(--ease-out)}
+.crumb:hover .crumb-arrow{transform:translateX(-3px)}
+
+/* Gmail alias rules: a toggle card per rule. */
+.gmail-rule{padding:12px;border:2px solid var(--border);background:var(--bg2);border-radius:8px;cursor:pointer;transition:var(--transition)}
+.gmail-rule.is-on{border-color:var(--emerald);background:var(--emerald-dim)}
+.gmail-rule-name{margin-bottom:4px;font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--text2)}
+.gmail-rule.is-on .gmail-rule-name{color:var(--emerald)}
+/* An extracted link: wraps anywhere, copies on click. */
+.code-link{margin:8px 0;font-size:var(--text-md);word-break:break-all;color:var(--emerald);cursor:pointer}
+.row-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+.menu-wrap{display:inline-flex}
+.row-actions-gap{display:inline-block;width:var(--ctl-h-sm)}
+.mh-x-batch{padding:12px 16px;border-bottom:1px solid var(--border)}
+
+/* ─── Mailbox (account-level) lease dividers ─── */
+.lease-sep td{background:var(--bg2);padding:7px 12px;font-size:var(--text-base);color:var(--text3)}
+.lease-sep .lease-name{font-weight:var(--fw-semibold);color:var(--text2)}
+
+/* ─── Message body, expanded in place under its own row ─── */
+.msg-expand > td{padding:0;border-top:none}
+.msg-expand-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--dur-med) var(--ease-out)}
+.msg-expand-wrap > div{min-height:0;overflow:hidden}
+.msg-expand.open .msg-expand-wrap{grid-template-rows:1fr}
+
+@keyframes panel-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+/* `backwards`, NOT `both`: with `both` the animation pins its end state forever
+   and outranks any later transition, so the panel could never be faded back
+   out. `backwards` only covers the frames before the animation starts, which is
+   all the flash protection this needs. */
+.detail-panel{animation:panel-in var(--dur-med) var(--ease-out) backwards}
+/* Swapping panels inside detail mode (scope tabs, refresh) replaced the old one
+   in a single frame while the new one arrived at a wildly different height —
+   276px to 1370px between two frames. Fading the outgoing panel first means the
+   resize happens with nothing visible sitting on it. */
+.detail-panel.panel-leaving{animation:none;opacity:0;transform:translateY(-6px);transition:opacity var(--dur-quick) var(--ease-out),transform var(--dur-quick) var(--ease-out)}
+
+/* ─── Code display ─── */
+.code-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:12px}
+.code-value{font-size:var(--text-3xl);font-weight:var(--fw-bold);font-family:var(--font-mono);letter-spacing:4px;color:var(--emerald);margin:8px 0;cursor:pointer;transition:text-shadow var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.code-value:hover{opacity:.85}
+.code-meta{font-size:var(--text-base);color:var(--text3)}
+
+/* ─── Inbox detail ─── */
+.detail-area{margin-top:16px}
+.detail-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.detail-panel h3{font-size:var(--text-lg);font-weight:var(--fw-semibold);margin-bottom:12px}
+
+
+
+/* ─── Template provider editor ─── */
+.tpl-editor-actions{flex-wrap:wrap;justify-content:flex-end}
+.tpl-preset{display:flex;align-items:center;gap:8px;font-size:var(--text-base);color:var(--text2)}
+/* Narrow: the preset takes its own line, the two buttons share the next one. */
+@media(max-width:600px){.tpl-preset{flex:1 1 100%}.tpl-preset select{flex:1;min-width:0}}
+.tpl-editor-cols{display:flex;gap:16px;flex-wrap:wrap}
+.tpl-editor-col{flex:1;min-width:320px;display:flex;flex-direction:column;gap:16px}
+.tpl-feats{display:flex;gap:12px;padding:0 20px 12px;flex-wrap:wrap}
+.tpl-json-panel{flex:1}
+.tpl-json-body{padding:0 20px 16px}
+#tpl-json{height:400px}
+.tpl-test-step{margin:4px 0;font-size:var(--text-md)}
+
+/* ─── Dashboard: two panels of one height, each scrolling its own body ─── */
+.dash-grid{align-items:stretch}
+.dash-panel{margin-bottom:0;display:flex;flex-direction:column}
+.dash-panel-body{flex:1;overflow-y:auto}
+.activity-note{padding:8px 0;font-size:var(--text-base);color:var(--text3)}
+
+/* ─── Mail detail panels (inbox, mailbox, iCloud) ─── */
+.detail-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.detail-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.detail-actions{margin-top:8px}
+.detail-panel .panel{margin-bottom:0}
+.detail-note{margin-top:10px;font-size:var(--text-base);color:var(--text3)}
+.msg-text{white-space:pre-wrap;font-size:var(--text-md)}
+.code-from{margin:8px 0;font-size:var(--text-base);color:var(--text3)}
+.code-box.create-result{margin:0 20px 16px}
+
+/* ─── Outlook authorisation pane ─── */
+.oauth-manual-hint{margin:6px 0 12px}
+.oauth-advanced{margin-top:12px}
+.oauth-advanced summary{cursor:pointer;user-select:none}
+.oauth-advanced > .form-row{margin-top:12px;padding:0}
+.oauth-advanced-actions{display:flex;align-items:center;gap:10px;margin-top:8px}
+
+/* ─── Batch progress (Outlook, YYDS) ─── */
+.mh-x-batch-text{overflow-wrap:anywhere}
+.mh-x-batch progress{width:100%;height:8px;margin-top:8px}
+
+/* ─── iCloud: SRP dialogs and the add-form help ─── */
+.srp-hint{color:var(--text2);line-height:1.8;margin-bottom:14px;white-space:pre-line}
+.srp-prompt{color:var(--text2);line-height:1.7}
+.srp-input{width:100%}
+.srp-code{margin-top:12px;letter-spacing:4px;font-family:var(--font-mono)}
+.srp-sms{margin:14px 0;padding-top:12px;border-top:1px solid var(--border)}
+.srp-sms-note{margin-bottom:8px;font-size:var(--text-base);color:var(--text3)}
+.srp-sms-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.help-lead{margin-bottom:6px}
+.help-step{display:flex;gap:8px;margin-top:4px}
+.help-num{flex:none;color:var(--text2);font-weight:var(--fw-semibold)}
+.help-foot{margin-top:8px;padding-top:6px;border-top:1px solid var(--border)}
+
+/* ─── Keys: daily quota cell ─── */
+.quota-cell{display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.quota-input{width:80px;text-align:right}
+.quota-used{white-space:nowrap;font-size:var(--text-sm);color:var(--text3)}
+
+/* ─── Services detail ─── */
+.svc-loading{padding:20px;font-size:var(--text-base);color:var(--text3)}
+.svc-stats{padding:12px 20px 0;font-size:var(--text-base);color:var(--text2)}
+#svc-detail-area > .panel{margin-top:12px}
+#svc-detail-area > .panel:first-child{margin-top:16px}
+
+/* ─── Gmail tool ─── */
+.gmail-hint{margin-top:8px;font-size:var(--text-sm);color:var(--text3)}
+.gmail-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;padding:16px 20px}
+#gmail-results{height:280px}

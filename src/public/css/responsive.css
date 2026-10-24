@@ -1,0 +1,106 @@
+/* ─── Responsive ─── */
+@media(max-width:900px){
+  .provider-grid{grid-template-columns:1fr}
+  .main{padding:20px 16px}
+}
+tr.row-selected td{background:color-mix(in oklab,var(--emerald) 13%,transparent) !important;color:var(--text) !important}
+tr.row-selected td:first-child{box-shadow:inset 3px 0 0 var(--emerald)}
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;font-size:var(--text-md);border-top:1px solid var(--border)}
+.pager button{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);height:var(--ctl-h-sm);padding:0 var(--ctl-px-sm);cursor:pointer;color:var(--text2);font-size:var(--ctl-fs-sm);transition:var(--transition)}
+.pager button:hover:not(:disabled){background:var(--bg3);color:var(--text)}
+.pager button:disabled{opacity:var(--disabled-opacity);cursor:default}
+.pager button:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.pager .pager-info{display:flex;align-items:center;gap:4px;color:var(--text3);font-size:var(--text-base)}
+.pager input[type="number"]{width:44px;text-align:center;height:var(--ctl-h-sm);padding:0 2px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:var(--ctl-fs-sm);-moz-appearance:textfield}
+.pager input[type="number"]::-webkit-inner-spin-button,.pager input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.pager select{height:var(--ctl-h-sm);padding:0 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:var(--ctl-fs-sm);cursor:pointer}
+.pager select option{background:var(--bg2);color:var(--text)}
+
+/* ─── Mobile (≤600px) ─── */
+@media(max-width:600px){
+  /* App layout: sidebar becomes bottom nav */
+  .app{flex-direction:column}
+  .sidebar{width:100%;height:58px;flex-direction:row;padding:0 8px;border-right:none;border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;z-index:100;justify-content:space-around;overflow:hidden;gap:0;box-shadow:0 -8px 24px rgba(0,0,0,.16)}
+  .brand,.nav-ind{display:none}
+  .nav-icon.active{background:var(--bg3)}
+  .nav-sep{display:none}
+  .sidebar-bottom{flex-direction:row;margin-top:0;gap:0}
+  .nav-icon{width:44px;height:44px}
+  .nav-icon.active::before{display:none}
+  .tooltip{display:none}
+  .mobile-secondary{display:none !important}
+  .mobile-more-wrap{display:block}
+  .main{padding:16px;padding-bottom:76px;overflow-x:hidden}
+  .filter-row > .search-box{flex:1 1 100%}
+  .page-stats{margin-left:0}
+  /* The tab row stays one line and scrolls inside itself; the fold toggle keeps its place. */
+  .panel-header:has(> .card-tabs){flex-wrap:nowrap}
+  input:not([type=checkbox]):not([type=radio]),.textarea{font-size:16px}
+
+  /* Page header: stack vertically */
+  .page-header{flex-direction:column;align-items:stretch;gap:10px;margin-bottom:16px}
+  .header-actions{width:100%}
+  .filter-row{width:100%}
+  .filter-row select,.filter-row input{flex:1;min-width:0}
+  .search-box{width:100% !important}
+
+  /* Form rows: stack vertically */
+  .form-row{flex-direction:column;gap:10px;padding:12px 14px}
+  .form-group{min-width:0;width:100%}
+  .form-group.auto-width{width:100%}
+  .form-group.auto-width .btn{width:100%}
+
+  /* Panel header: wrap actions */
+  .panel-header{flex-wrap:wrap;gap:8px;padding:10px 14px}
+  .panel-actions{flex-wrap:wrap;gap:4px;width:100%}
+
+  /* Tables: horizontal scroll */
+  .table-wrap{border-radius:var(--radius-sm)}
+  .table-wrap table{min-width:680px}
+  .table-wrap.fit table,.table-wrap table:has(td.empty-cell){min-width:0}
+  th,td{padding:8px 12px;white-space:nowrap}
+
+  /* Outlook grid: single column */
+  #ol-panels-grid{grid-template-columns:1fr !important}
+
+  /* Dialog */
+  .dialog{width:calc(100vw - 32px);max-width:380px}
+
+  /* Toast */
+  .toast{top:auto;right:10px;left:10px;bottom:72px;width:auto;max-width:none;transform:translateY(8px) scale(.98)}
+  .toast.show{transform:translateY(0) scale(1)}
+
+  /* Login */
+  .login-box{width:calc(100% - 32px);max-width:360px}
+
+  /* Docs */
+  .docs-content{padding:0 12px 40px}
+  .docs-endpoint-header{align-items:flex-start;flex-wrap:wrap;gap:8px}
+  .docs-endpoint-header .path{max-width:100%;overflow-wrap:anywhere}
+  .docs-endpoint-header .desc{margin-left:0;width:100%;line-height:1.4}
+  .docs-note{overflow-wrap:anywhere}
+  pre.docs-code{font-size:var(--text-sm)}
+}
+.mobile-more-wrap{display:none}
+.mobile-more-panel{position:fixed;left:10px;right:10px;bottom:70px;z-index:120;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-overlay);padding:10px;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px) scale(.98);transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out),visibility 0s linear var(--dur-fast)}
+.mobile-more-panel.show{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1);transition-delay:0s}
+.mobile-more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mobile-more-item{height:40px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--radius-sm);color:var(--text2);font:inherit;font-size:var(--text-sm);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:var(--transition)}
+.mobile-more-item:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.mobile-more-item:active{transform:scale(.97)}
+.mobile-more-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){.mobile-more-wrap{display:block}}
+@media (hover:none) {
+  .logo-icon:hover,.provider-card:hover{transform:none;box-shadow:none}
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+  .toast,.dialog,.overlay,.mobile-more-panel,.docs-endpoint-body { transition:opacity 120ms ease !important; transform:none !important; }
+  .dot-pulse { animation: none !important; box-shadow: none !important; }
+  .btn-primary:hover { transform: none !important; }
+  .nav-icon.spinning svg { animation: none !important; }
+  .btn[data-loading]::after { animation: none !important; }
+  .detail-panel { animation: none !important; }
+  .scope-ind, .msg-expand-wrap, .crumb-arrow, .collapse-caret { transition: none !important; }
+  .dispatch-list .dispatch-row { transition: none !important; }
+}

@@ -1,0 +1,68 @@
+:root {
+  /* Every color is defined once. light-dark() picks the
+     value for the active color-scheme: [data-theme] pins it, auto follows the OS. */
+  color-scheme: light dark;
+  --bg: light-dark(oklch(.975 .002 260), oklch(.17 .005 260));
+  --bg2: light-dark(oklch(1 0 0), oklch(.205 .005 260));
+  --bg3: light-dark(oklch(.955 .003 260), oklch(.25 .005 260));
+  --border: light-dark(oklch(.905 .004 260), oklch(.29 .006 260));
+  --border2: light-dark(oklch(.82 .005 260), oklch(.35 .006 260));
+  --text: light-dark(oklch(.21 .008 260), oklch(.95 .004 260));
+  --text2: light-dark(oklch(.47 .01 260), oklch(.75 .008 260));
+  --text3: light-dark(oklch(.54 .01 260), oklch(.6 .01 260));
+  --emerald: light-dark(#0d7f64, #34d399);
+  --amber: light-dark(#9a5b18, #fbbf24);
+  --rose: light-dark(#b4234f, #fb7185);
+  --emerald-dim: color-mix(in oklab, var(--emerald) 12%, transparent);
+  --amber-dim: color-mix(in oklab, var(--amber) 12%, transparent);
+  --rose-dim: color-mix(in oklab, var(--rose) 12%, transparent);
+  --accent-contrast: light-dark(#fff, oklch(.17 .005 260));
+  --emerald-hover: light-dark(#086d57, #2bc48a);   /* primary button hover */
+  --row-hover: color-mix(in oklab, var(--text) 3%, transparent);
+  --overlay-bg: light-dark(oklch(.2 .01 260 / .32), oklch(0 0 0 / .55));
+  --shadow-color: light-dark(oklch(.2 .01 260 / .14), oklch(0 0 0 / .5));
+  --shadow-overlay: 0 8px 24px var(--shadow-color);
+  --radius: 10px;
+  --radius-sm: 7px;
+  --ease-out: cubic-bezier(.23,1,.32,1);
+  --ease-in-out: cubic-bezier(.77,0,.175,1);
+  --ease-soft: cubic-bezier(.2,.8,.2,1);
+  --dur-quick: 120ms;
+  --dur-fast: 180ms;
+  --dur-med: 240ms;
+  --transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  /* Springs sampled from stiffness/damping (mass 1) and cut at
+     0.5% of the travel. Damping ratio >= 1, so none of them overshoots. */
+  --spring-snappy: linear(0, 0.07, 0.208, 0.362, 0.501, 0.618, 0.715, 0.788, 0.846, 0.887, 0.918, 0.942, 0.958, 0.97, 0.979, 0.985, 0.989, 0.992, 0.995, 0.996, 1);
+  --dur-spring-snappy: 374ms;
+  --spring-smooth: linear(0, 0.072, 0.211, 0.364, 0.501, 0.615, 0.709, 0.78, 0.835, 0.878, 0.909, 0.933, 0.95, 0.963, 0.973, 0.98, 0.985, 0.989, 0.992, 0.994, 1);
+  --dur-spring-smooth: 533ms;
+  --spring-gentle: linear(0, 0.076, 0.221, 0.376, 0.511, 0.625, 0.714, 0.784, 0.837, 0.878, 0.908, 0.932, 0.949, 0.962, 0.971, 0.979, 0.984, 0.988, 0.991, 0.993, 1);
+  --dur-spring-gentle: 825ms;
+
+  /* Type scale */
+  --font-sans: 'Outfit','Noto Sans SC',sans-serif;
+  --font-mono: 'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --text-sm: 12px;     /* meta */
+  --text-base: 13px;   /* controls, mono identifiers */
+  --text-md: 14px;     /* body, card titles */
+  --text-lg: 16px;     /* section titles */
+  --text-2xl: 22px;    /* h1 */
+  --text-3xl: 28px;    /* display number, short code */
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Control size tokens */
+  --ctl-h-sm: 28px;  --ctl-px-sm: 10px;  --ctl-fs-sm: var(--text-sm);
+  --ctl-h-md: 32px;  --ctl-px-md: 14px;  --ctl-fs-md: var(--text-base);
+  --ctl-h-lg: 40px;  --ctl-px-lg: 18px;  --ctl-fs-lg: var(--text-md);
+
+  /* Shared control states */
+  --focus-ring: 0 0 0 3px color-mix(in oklab, var(--emerald) 35%, transparent);
+  --disabled-opacity: .5;
+}
+:root[data-theme='dark'] { color-scheme: dark; }
+:root[data-theme='light'] { color-scheme: light; }

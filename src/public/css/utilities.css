@@ -1,0 +1,20 @@
+/* ─── Utilities ───
+   Colour, background and font utilities for markup and templates, which may not
+   carry these as inline styles (tests/admin-spa-styles.test.ts). Each one stands in
+   for the inline declaration it replaced, so each wins the way an inline style did:
+   with !important. A component with its own look gets a class of its own instead. */
+.text-1{color:var(--text) !important}
+.text-2{color:var(--text2) !important}
+.text-3{color:var(--text3) !important}
+.tone-ok{color:var(--emerald) !important}
+.tone-warn{color:var(--amber) !important}
+.tone-bad{color:var(--rose) !important}
+.fs-sm{font-size:var(--text-sm) !important}
+.fs-base{font-size:var(--text-base) !important}
+.fs-md{font-size:var(--text-md) !important}
+.fw-medium{font-weight:var(--fw-medium) !important}
+.fw-semibold{font-weight:var(--fw-semibold) !important}
+.ff-mono{font-family:var(--font-mono) !important}
+.bg-2{background:var(--bg2) !important}
+.bg-3{background:var(--bg3) !important}
+.bg-control{background:var(--bg2) !important}

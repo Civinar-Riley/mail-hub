@@ -28,6 +28,7 @@ import { runningBatchJob, runSynchronousBatch } from './batch-jobs.js';
 import { todayDateString } from './utils.js';
 import { APP_VERSION } from './version.js';
 import { errorMessage, httpStatus, jsonStatus } from './errors.js';
+import { loadPublicBundle, registerAssetRoutes, type PublicBundle } from './static-assets.js';
 import { requestLogger } from './request-logger.js';
 
 const log = createLogger('cleanup');
@@ -69,11 +70,11 @@ async function readBodyWithinLimit(body: ReadableStream<Uint8Array>, limit: numb
 const __dirname = dirname(fileURLToPath(import.meta.url));
 let cleanupRunning = false;
 let extRoutes: Hono<AdminEnv> | undefined;
-let cachedIndexHtml = '';
+let publicBundle: PublicBundle = { indexHtml: '', assets: new Map() };
 let cachedExtensionsJs = '';
 
 function preloadFiles(): void {
-  cachedIndexHtml = readFileSync(resolve(__dirname, 'public/index.html'), 'utf-8');
+  publicBundle = loadPublicBundle(resolve(__dirname, 'public'));
   try {
     cachedExtensionsJs = readFileSync(resolve(__dirname, 'public/extensions.js'), 'utf-8');
   } catch {
@@ -614,7 +615,7 @@ export function createApp(): Hono<AdminEnv> {
   });
 
   app.get('/', (c) => {
-    return c.html(cachedIndexHtml);
+    return c.html(publicBundle.indexHtml);
   });
 
   app.get('/extensions.js', (c) => {
@@ -622,6 +623,8 @@ export function createApp(): Hono<AdminEnv> {
     c.header('Content-Type', 'application/javascript; charset=utf-8');
     return c.body(cachedExtensionsJs);
   });
+
+  registerAssetRoutes(app, publicBundle);
 
   app.route('/api', inboxRoutes);
   app.route('/api', blockRoutes);

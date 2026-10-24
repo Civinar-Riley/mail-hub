@@ -1,0 +1,77 @@
+/* ─── Sidebar ─── */
+.sidebar{width:60px;padding:14px 0;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;position:relative;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-shrink:0}
+.brand-name{display:none;font-size:var(--text-md);font-weight:var(--fw-semibold);white-space:nowrap}
+.logo-icon{width:34px;height:34px;background:var(--emerald);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent-contrast);cursor:default}
+/* One --bg3 block marks the current item and slides
+   between items. syncNavInd() measures and places it. */
+.nav-ind{position:absolute;top:0;left:0;width:0;height:0;border-radius:9px;background:var(--bg3);pointer-events:none;opacity:0}
+.nav-ind.ready{opacity:1}
+.tooltip-wrap{position:relative;flex-shrink:0}
+.nav-icon{position:relative;z-index:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:9px;cursor:pointer;transition:color var(--dur-fast) var(--ease-out),transform var(--dur-quick) var(--ease-out);color:var(--text2)}
+.nav-icon:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.nav-icon:hover{color:var(--text)}
+.nav-icon:active{transform:scale(.96)}
+.nav-icon.active{color:var(--emerald)}
+.nav-icon svg{width:18px;height:18px;flex-shrink:0}
+.nav-sep{width:24px;height:1px;background:var(--border);margin:8px 0;flex-shrink:0}
+.nav-group-title{display:none}
+.sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tooltip-wrap:hover .tooltip{opacity:1;transform:translateX(0) translateY(-50%)}
+.tooltip{position:absolute;left:calc(100% + 10px);top:50%;transform:translateX(4px) translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 10px;font-size:var(--text-sm);color:var(--text);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 140ms var(--ease-out),transform 140ms var(--ease-out);z-index:20;box-shadow:var(--shadow-overlay)}
+/* Wide: the tooltip becomes the item's label, laid over the full-width row so
+   a click anywhere on the row still lands on .nav-icon. */
+@media(min-width:1024px){
+  .sidebar{width:224px;padding:0 12px 12px;align-items:stretch;overflow-y:auto;scrollbar-width:none}
+  .brand{height:56px;margin:0 0 4px;padding:0 4px}
+  .brand-name{display:block}
+  .tooltip-wrap{width:100%}
+  .nav-icon{width:100%;height:36px;justify-content:flex-start;padding:0 10px;border-radius:var(--radius-sm)}
+  .nav-icon:active{transform:none}
+  .nav-icon svg{width:16px;height:16px}
+  .tooltip,.tooltip-wrap:hover .tooltip{left:36px;opacity:1;transform:translateY(-50%);background:none;border:0;padding:0;box-shadow:none;font-size:var(--text-md);color:var(--text2);z-index:1;transition:color var(--dur-fast) var(--ease-out)}
+  .tooltip-wrap:hover .tooltip{color:var(--text)}
+  .tooltip-wrap:has(> .nav-icon.active) .tooltip{color:var(--text);font-weight:var(--fw-medium)}
+  .nav-sep{display:none}
+  .nav-group-title{display:block;padding:16px 10px 6px;font-size:var(--text-sm);color:var(--text3);white-space:nowrap}
+  .sidebar-bottom{flex-direction:row;flex-wrap:wrap;align-items:stretch;padding-top:16px}
+  .sidebar-bottom > .nav-group-title,.sidebar-bottom > .tooltip-wrap:has(> .nav-icon[data-view]){width:100%}
+  .nav-ind{border-radius:var(--radius-sm)}
+  /* Actions with no view of their own (refresh, language, theme, logout) sit
+     in one row of icon buttons, with the tooltip above, so the list of views
+     keeps its full height inside a 900px viewport. */
+  .sidebar-bottom > .tooltip-wrap:not(:has(> .nav-icon[data-view])){width:auto;margin-top:8px}
+  .sidebar-bottom > .tooltip-wrap:not(:has(> .nav-icon[data-view])) > .nav-icon{width:36px;padding:0;justify-content:center}
+  .sidebar-bottom > .tooltip-wrap:not(:has(> .nav-icon[data-view])) > .tooltip{left:50%;top:auto;bottom:calc(100% + 6px);transform:translateX(-50%) translateY(4px);opacity:0;background:var(--bg2);border:1px solid var(--border);padding:4px 10px;font-size:var(--text-sm);color:var(--text);box-shadow:var(--shadow-overlay);z-index:20;transition:opacity 140ms var(--ease-out),transform 140ms var(--ease-out)}
+  .sidebar-bottom > .tooltip-wrap:not(:has(> .nav-icon[data-view])):hover > .tooltip{opacity:1;transform:translateX(-50%)}
+}
+/* Wide screens, docs open — the 60px icon rail. Icons keep the x they have
+   in the full sidebar (centre at 30px), so collapsing only narrows the bar and moves items up;
+   js/shell/nav-rail.js animates that. Labels come back as hover tooltips beside the rail. */
+@media(min-width:1024px){
+  :root.nav-rail .sidebar{width:60px;padding:14px 0 14px 11px;align-items:flex-start;overflow:visible}
+  :root.nav-rail .sidebar .brand{height:auto;margin:0 0 20px;padding:0 2px}
+  :root.nav-rail .sidebar .brand-name,:root.nav-rail .sidebar .nav-group-title{display:none}
+  :root.nav-rail .sidebar .nav-sep{display:block;margin:8px 0 8px 7px}
+  :root.nav-rail .sidebar .tooltip-wrap{width:auto}
+  :root.nav-rail .sidebar .nav-icon{width:38px;height:38px;padding:0;justify-content:center;border-radius:9px}
+  :root.nav-rail .sidebar .nav-ind{border-radius:9px}
+  :root.nav-rail .sidebar .sidebar-bottom{flex-direction:column;flex-wrap:nowrap;align-items:flex-start;padding-top:0}
+  :root.nav-rail .sidebar .sidebar-bottom > .tooltip-wrap{width:auto;margin-top:0}
+  :root.nav-rail .sidebar .sidebar-bottom > .tooltip-wrap > .nav-icon{width:38px}
+  :root.nav-rail .sidebar .tooltip-wrap > .tooltip{left:calc(100% + 10px);top:50%;bottom:auto;opacity:0;transform:translateX(4px) translateY(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 10px;font-size:var(--text-sm);font-weight:inherit;color:var(--text);box-shadow:var(--shadow-overlay);z-index:20;transition:opacity 140ms var(--ease-out),transform 140ms var(--ease-out)}
+  :root.nav-rail .sidebar .tooltip-wrap:hover > .tooltip{opacity:1;transform:translateX(0) translateY(-50%)}
+  .sidebar.is-widening{overflow:hidden}
+  .sidebar.is-widening > :not(.nav-ind){min-width:200px}
+}
+
+/* ─── Main ─── */
+.main{flex:1;min-width:0;padding:24px 32px;overflow-y:auto;scrollbar-gutter:stable;background:var(--bg);display:flex;flex-direction:column}
+.main > .view{width:100%;max-width:1440px}
+.main-foot{order:2;margin-top:auto;padding-top:24px;max-width:1440px;font-size:var(--text-sm);color:var(--text3)}
+@media(max-width:1023px){.main{padding:20px 24px}}
+
+/* ─── Views ─── */
+.view{display:none}
+.view.active{display:block}
+

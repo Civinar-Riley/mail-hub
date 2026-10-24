@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { spaSource } from './helpers/spa-source.js';
 
-const source = readFileSync(resolve(process.cwd(), 'src/public/index.html'), 'utf8');
+const source = spaSource();
 
 function addActivityCalls(): string[][] {
   const calls: string[][] = [];

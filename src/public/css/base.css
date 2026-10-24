@@ -1,0 +1,12 @@
+*{margin:0;padding:0;box-sizing:border-box}
+/* hidden always wins: a class that sets display must not show an element marked hidden. */
+[hidden]{display:none !important}
+body{font-family:var(--font-sans);font-size:var(--text-md);line-height:1.5;font-variant-numeric:tabular-nums;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--emerald);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--emerald);outline-offset:2px}
+progress{accent-color:var(--emerald)}
+code,kbd,samp,pre{font-family:var(--font-mono)}
+
+.app{display:flex;height:100vh}
+

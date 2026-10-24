@@ -1,0 +1,1492 @@
+<!-- views/docs.html — markup of the API docs view (#v-docs), inserted at startup by loadDocsMarkup() in js/views/docs.js. -->
+      <div class="page-header">
+        <div class="page-title-area">
+          <h1 class="page-title" data-i18n="docs.api_title">API 文档</h1>
+        </div>
+        <div class="header-actions">
+          <span class="fs-base text-3"><span data-i18n="docs.base_url">Base URL:</span> <code class="text-2">/api</code></span>
+        </div>
+      </div>
+
+      <div class="docs-layout">
+        <nav class="docs-nav">
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.overview">概述</div>
+            <a href="#doc-auth" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]' data-i18n="docs.nav_auth">认证方式</a>
+            <a href="#doc-errors" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]' data-i18n="docs.nav_errors">错误处理</a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.inbox_mgmt">邮箱管理</div>
+            <a href="#doc-create-inbox" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_create_inbox">创建邮箱</span></a>
+            <a href="#doc-list-inboxes" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_list_inboxes">邮箱列表</span></a>
+            <a href="#doc-get-messages" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_get_messages">获取邮件</span></a>
+            <a href="#doc-get-message" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_get_message">邮件详情</span></a>
+            <a href="#doc-get-code" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_get_code">提取验证码</span></a>
+            <a href="#doc-report-inbox" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_report_inbox">上报结果</span></a>
+            <a href="#doc-close-inbox" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_close_inbox">关闭邮箱</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.block_mgmt">封禁管理</div>
+            <a href="#doc-list-blocks" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_list_blocks">封禁列表</span></a>
+            <a href="#doc-add-block" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_add_block">添加封禁</span></a>
+            <a href="#doc-del-block" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_del_block">删除封禁</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.provider_mgmt">渠道管理</div>
+            <a href="#doc-list-providers" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_list_providers">渠道列表</span></a>
+            <a href="#doc-get-provider" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_get_provider">渠道详情</span></a>
+            <a href="#doc-patch-provider" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-patch">PATCH</span><span data-i18n="docs.nav_patch_provider">更新渠道</span></a>
+            <a href="#doc-get-domains" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_get_domains">可用域名</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.outlook_pool">Outlook 账号池</div>
+            <a href="#doc-ol-stats" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ol_stats">池统计</span></a>
+            <a href="#doc-ol-import" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ol_import">导入账号</span></a>
+            <a href="#doc-ol-list" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ol_list">账号列表</span></a>
+            <a href="#doc-ol-mailbox" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ol_mailbox">账号邮箱</span></a>
+            <a href="#doc-ol-delete" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_ol_delete">删除账号</span></a>
+            <a href="#doc-ol-check" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ol_check">检测令牌</span></a>
+            <a href="#doc-ol-renew" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ol_renew">续期令牌</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.yyds_pool">YYDS Mail 池</div>
+            <a href="#doc-yd-stats" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_yd_stats">池统计</span></a>
+            <a href="#doc-yd-import" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_yd_import">导入 Key</span></a>
+            <a href="#doc-yd-list" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_yd_list">Key 列表</span></a>
+            <a href="#doc-yd-delete" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_yd_delete">删除 Key</span></a>
+            <a href="#doc-yd-check" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_yd_check">验证 Key</span></a>
+            <a href="#doc-yd-wildcard" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-patch">PATCH</span><span data-i18n="docs.nav_yd_wildcard">Wildcard 设置</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.imap_pool">IMAP 域名邮箱</div>
+            <a href="#doc-im-stats" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_im_stats">池统计</span></a>
+            <a href="#doc-im-list" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_im_list">账号列表</span></a>
+            <a href="#doc-im-list-one" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_im_list_one">账号详情</span></a>
+            <a href="#doc-im-add" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_im_add">添加账号</span></a>
+            <a href="#doc-im-update" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-put">PUT</span><span data-i18n="docs.nav_im_update">更新账号</span></a>
+            <a href="#doc-im-delete" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_im_delete">删除账号</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.icloud_pool">iCloud 别名</div>
+            <a href="#doc-ic-list" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ic_list">Apple ID 列表</span></a>
+            <a href="#doc-ic-add" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_add">添加 Apple ID</span></a>
+            <a href="#doc-ic-test" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_test">检测两半</span></a>
+            <a href="#doc-ic-cookies" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_cookies">更换 Cookie</span></a>
+            <a href="#doc-ic-srp" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_srp">SRP 登录</span></a>
+            <a href="#doc-ic-generate" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_generate">生成地址</span></a>
+            <a href="#doc-ic-addresses" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ic_addresses">地址池</span></a>
+            <a href="#doc-ic-mail" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_ic_mail">按地址读信</span></a>
+            <a href="#doc-ic-retire" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_ic_retire">停用地址</span></a>
+            <a href="#doc-im-test" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_im_test">测试连接</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.key_mgmt">密钥管理</div>
+            <a href="#doc-key-create" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-post">POST</span><span data-i18n="docs.nav_key_create">创建密钥</span></a>
+            <a href="#doc-key-list" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_key_list">密钥列表</span></a>
+            <a href="#doc-key-update" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-patch">PATCH</span><span data-i18n="docs.nav_key_update">更新密钥</span></a>
+            <a href="#doc-key-delete" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-delete">DEL</span><span data-i18n="docs.nav_key_delete">删除密钥</span></a>
+          </div>
+          <div class="docs-nav-group">
+            <div class="docs-nav-group-title" data-i18n="docs.ai_integration">AI / LLM 集成</div>
+            <a href="#doc-llms" data-on-click="scrollDoc" data-args='[{"$":"event"},{"$":"el"}]'><span class="method m-get">GET</span><span data-i18n="docs.nav_llms">llms.txt</span></a>
+          </div>
+        </nav>
+
+        <div class="docs-content" id="docs-content">
+          <div class="docs-note" data-i18n="docs.time_contract">API 时间点统一使用带 Z 的 UTC ISO 时间；页面按浏览器本地时区显示。每日额度按 UTC 00:00 重置。</div>
+
+          <!-- ── 概述 ── -->
+          <div class="docs-section" id="doc-auth">
+            <h2 data-i18n="docs.auth_title">认证方式</h2>
+            <p data-i18n-html="docs.auth_desc1">所有 <code>/api/*</code> 接口需在请求头中携带 Bearer Token。支持两种身份：</p>
+            <pre class="docs-code">Authorization: Bearer your-token</pre>
+            <p data-i18n-html="docs.auth_desc2"><strong>管理员密钥</strong>（环境变量 <code>API_SECRET</code>）：拥有全部权限，包括密钥管理接口。</p>
+            <p data-i18n-html="docs.auth_desc3"><strong>普通 API Key</strong>（通过管理员创建，<code>mk_</code> 前缀）：可调用除密钥管理外的全部接口。每次调用自动记录用量。</p>
+            <p data-i18n-html="docs.auth_desc4">若未设置 <code>API_SECRET</code> 则无需认证（开发模式）。</p>
+          </div>
+
+          <div class="docs-section" id="doc-errors">
+            <h2 data-i18n="docs.errors_title">错误处理</h2>
+            <p data-i18n="docs.errors_desc1">所有错误响应格式统一：</p>
+            <pre class="docs-code">{
+  <span class="ck">"error"</span>: <span class="cs" data-i18n="docs.example_error">错误描述信息</span>
+}</pre>
+            <p data-i18n-html="docs.errors_desc2">常见状态码：<code>400</code> 参数错误、<code>401</code> 未认证、<code>404</code> 资源不存在、<code>409</code> 资源冲突、<code>410</code> 资源已关闭、<code>502</code> 上游服务异常、<code>503</code> 全部渠道不可用。</p>
+          </div>
+
+          <!-- ── 邮箱管理 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.inbox_title">邮箱管理</h2>
+            <p data-i18n="docs.inbox_desc">核心工作流：创建临时邮箱 → 轮询收信 → 提取验证码 → 上报结果 → 关闭邮箱。</p>
+
+            <div class="docs-endpoint open" id="doc-create-inbox">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/inbox</span>
+                <span class="desc" data-i18n-html="docs.create_inbox_desc">创建邮箱（自动调度或指定渠道）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">for</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n-html="docs.create_inbox_param_for">目标服务名（如 <code>twitter.com</code>），用于避开已封禁的域名。缺失返回 <code>400</code></td></tr>
+                    <tr><td class="param-name">provider</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.create_inbox_param_provider">指定渠道名（如 <code>mailtm</code>、<code>outlook</code>），不填则自动调度</td></tr>
+                    <tr><td class="param-name">domain</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.create_inbox_param_domain">指定域名</td></tr>
+                    <tr><td class="param-name">subdomain</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.create_inbox_param_subdomain">泛子域名前缀（仅 YYDS 渠道），如 <code>team-a</code> → <code>user@team-a.example.com</code></td></tr>
+                    <tr><td class="param-name">alias</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.create_inbox_param_alias">要一个子地址别名（<code>账号+标签@域名</code>）。标签由服务端生成，不要自己传。仅 Outlook 支持，其他渠道忽略——请以响应里的 <code>address</code> 为准</td></tr>
+                    <tr><td class="param-name">duration</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.create_inbox_param_duration">邮箱有效时长（秒），最小 60，最大 30 天；到期自动关闭并释放资源</td></tr>
+                    <tr><td class="param-name">needPolling</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.create_inbox_param_needPolling">是否要求渠道支持轮询收信，默认 <code>true</code></td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_201">响应 201</div>
+                <pre class="docs-code">{
+  <span class="ck">"id"</span>: <span class="cs">"aBcDeFgHiJkL"</span>,
+  <span class="ck">"address"</span>: <span class="cs">"random@domain.com"</span>,
+  <span class="ck">"provider"</span>: <span class="cs">"mailtm"</span>,
+  <span class="ck">"expiresAt"</span>: <span class="cs">"2025-01-01T12:00:00Z"</span>,
+  <span class="ck">"features"</span>: { <span class="ck">"pollInbox"</span>: <span class="cv">true</span>, <span class="ck">"attachments"</span>: <span class="cv">false</span>, ... }
+}</pre>
+                <div class="docs-note" data-i18n="docs.create_inbox_note">自动调度按「调度顺序」逐个尝试渠道，跳过已禁用、仅手动、限流/冷却中的；顺序可全局或按目标服务设置，用 GET /api/dispatch/preview 可预演。Outlook 渠道从账号池中分配。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-list-inboxes">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/inboxes</span>
+                <span class="desc" data-i18n="docs.list_inboxes_desc">查询邮箱列表</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">status</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.list_inboxes_param_status"><code>active</code> 或 <code>closed</code></td></tr>
+                    <tr><td class="param-name">provider</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.list_inboxes_param_provider">按渠道名筛选</td></tr>
+                    <tr><td class="param-name">for</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.list_inboxes_param_for">按目标服务筛选</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"inboxes"</span>: [
+    { <span class="ck">"id"</span>: <span class="cs">"..."</span>, <span class="ck">"provider"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"address"</span>: <span class="cs">"..."</span>,
+      <span class="ck">"target_service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"created_at"</span>: <span class="cs">"..."</span>,
+      <span class="ck">"expires_at"</span>: <span class="cv">null</span>, <span class="ck">"status"</span>: <span class="cs">"active"</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-get-messages">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/inbox/:id/messages</span>
+                <span class="desc" data-i18n="docs.get_messages_desc">获取邮箱内所有邮件</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.path_params">路径参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody><tr><td class="param-name">id</td><td data-i18n="docs.get_messages_param_id">邮箱 ID（由创建接口返回）</td></tr></tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"messages"</span>: [
+    { <span class="ck">"id"</span>: <span class="cs">"msg-id"</span>, <span class="ck">"from"</span>: <span class="cs">"noreply@x.com"</span>,
+      <span class="ck">"subject"</span>: <span class="cs">"code"</span>, <span class="ck">"excerpt"</span>: <span class="cs" data-i18n="docs.example_code_excerpt">您的验证码是...</span>,
+      <span class="ck">"receivedAt"</span>: <span class="cs">"2025-01-01T12:00:00Z"</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-get-message">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/inbox/:id/messages/:mid</span>
+                <span class="desc" data-i18n="docs.get_message_desc">获取单封邮件详情（含 HTML/Text 正文）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.path_params">路径参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">id</td><td data-i18n="docs.get_message_param_id">邮箱 ID</td></tr>
+                    <tr><td class="param-name">mid</td><td data-i18n="docs.get_message_param_mid">邮件 ID（由邮件列表返回）</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"id"</span>: <span class="cs">"msg-id"</span>, <span class="ck">"from"</span>: <span class="cs">"..."</span>, <span class="ck">"subject"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"text"</span>: <span class="cs" data-i18n="docs.example_plain_text">纯文本正文</span>,
+  <span class="ck">"html"</span>: <span class="cs">"&lt;html&gt;...&lt;/html&gt;"</span>,
+  <span class="ck">"receivedAt"</span>: <span class="cs">"2025-01-01T12:00:00Z"</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-get-code">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/inbox/:id/code</span>
+                <span class="desc" data-i18n="docs.get_code_desc">自动提取验证码/链接</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">wait</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.get_code_param_wait">设为 <code>true</code> 会轮询等待邮件到达</td></tr>
+                    <tr><td class="param-name">timeout</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.get_code_param_timeout">等待超时（秒），默认 60，最大 120</td></tr>
+                    <tr><td class="param-name">type</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.get_code_param_type">按类型过滤：<code>numeric</code>、<code>alphanumeric</code>、<code>link</code></td></tr>
+                    <tr><td class="param-name">since</td><td class="param-type">string/number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.get_code_param_since">只提取此时间之后收到的新邮件，支持 ISO 时间或毫秒时间戳</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"codes"</span>: [
+    { <span class="ck">"type"</span>: <span class="cs">"numeric"</span>, <span class="ck">"value"</span>: <span class="cs">"483921"</span>,
+      <span class="ck">"confidence"</span>: <span class="cv">0.95</span>, <span class="ck">"context"</span>: <span class="cs" data-i18n="docs.example_code_context">您的验证码是 483921</span> }
+  ],
+  <span class="ck">"email"</span>: { <span class="ck">"from"</span>: <span class="cs">"..."</span>, <span class="ck">"subject"</span>: <span class="cs">"..."</span> },
+  <span class="ck">"messageId"</span>: <span class="cs">"message-123"</span>,
+  <span class="ck">"receivedAt"</span>: <span class="cs">"2025-01-01T00:01:00Z"</span>
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.get_code_note">典型集成方式：先 <code>POST /api/inbox</code> 创建邮箱 → 用邮箱注册目标服务 → <code>GET /api/inbox/:id/code?wait=true&amp;timeout=60</code> 等待验证码。需要多次取件时，把上次响应的 <code>receivedAt</code> 作为 <code>since</code> 传入，避免重复返回同一封邮件。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-report-inbox">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/inbox/:id/report</span>
+                <span class="desc" data-i18n="docs.report_inbox_desc">上报邮箱使用结果（成功/失败）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">success</td><td class="param-type">boolean</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n-html="docs.report_inbox_param_success"><code>true</code> 记录成功，<code>false</code> 记录失败（可触发自动封禁规则）</td></tr>
+                    <tr><td class="param-name">service</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.report_inbox_param_service">目标服务名，用于统计和自动封禁规则匹配</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"ok"</span>: <span class="cv">true</span>,
+  <span class="ck">"action"</span>: <span class="cs">"block_recorded"</span>,
+  <span class="ck">"blocked"</span>: { <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"domain"</span>: <span class="cs">"example.com"</span> }
+}</pre>
+                <div class="docs-note" data-i18n="docs.report_inbox_note">上报失败会记录日志。若管理员配置了自动封禁规则（如「某服务失败 3 次/24h 自动封禁」），达到阈值时域名会被自动封禁。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-close-inbox">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/inbox/:id</span>
+                <span class="desc" data-i18n="docs.close_inbox_desc">关闭邮箱</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <p data-i18n-html="docs.close_inbox_body">关闭后邮箱状态变为 <code>closed</code>，不再可用。Outlook 渠道会释放账号回池。</p>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 封禁管理 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.block_title">封禁管理</h2>
+            <p data-i18n="docs.block_desc">管理「服务 + 域名」的封禁规则。调度器创建邮箱时会自动跳过已封禁的域名。</p>
+
+            <div class="docs-endpoint" id="doc-list-blocks">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/blocks</span>
+                <span class="desc" data-i18n="docs.list_blocks_desc">查询封禁列表</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">service</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.list_blocks_param_service">按服务名精确筛选</td></tr>
+                    <tr><td class="param-name">domain</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.list_blocks_param_domain">按域名精确筛选</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"blocks"</span>: [
+    { <span class="ck">"id"</span>: <span class="cv">1</span>, <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"domain"</span>: <span class="cs">"sharklasers.com"</span>,
+      <span class="ck">"provider"</span>: <span class="cs">"guerrillamail"</span>, <span class="ck">"blocked_at"</span>: <span class="cs">"..."</span>, <span class="ck">"reason"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-add-block">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/blocks</span>
+                <span class="desc" data-i18n="docs.add_block_desc">手动添加封禁</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">service</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.add_block_param_service">服务名</td></tr>
+                    <tr><td class="param-name">domain</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.add_block_param_domain">域名</td></tr>
+                    <tr><td class="param-name">provider</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.add_block_param_provider">关联渠道名</td></tr>
+                    <tr><td class="param-name">reason</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.add_block_param_reason">封禁原因</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_201">响应 201</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-del-block">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/blocks/:id</span>
+                <span class="desc" data-i18n="docs.del_block_desc">删除封禁记录</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.path_params">路径参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody><tr><td class="param-name">id</td><td data-i18n="docs.del_block_param_id">封禁记录 ID（由列表接口返回）</td></tr></tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 渠道管理 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.provider_title">渠道管理</h2>
+            <p data-i18n="docs.provider_desc">查询和配置邮箱渠道（Provider）。每个渠道可独立启用/禁用、选择是否参与自动调度；自动调度的先后顺序由下方的调度规则接口管理。</p>
+            <div class="docs-note">
+              <span data-i18n-html="docs.provider_note_title"><strong>池化渠道说明</strong><br></span>
+              <span data-i18n-html="docs.provider_note_outlook"><strong>Outlook</strong>：1:1 账号分配模式，每个邮箱独占一个 Outlook 账号，关闭后账号回池。容量 = 空闲账号数。<br></span>
+              <span data-i18n-html="docs.provider_note_yyds"><strong>YYDS Mail</strong>：多 API Key 池化模式（<code>X-API-Key</code> 认证），支持固定域名和泛子域名（wildcard）。每个 key 每日 20,000 次 API 调用配额，按 key 轮转分摊负载。邮件 24 小时自动删除。上游 API 文档：<a href="https://maliapi.215.im/v1/llms.txt" target="_blank">maliapi.215.im/v1/llms.txt</a></span>
+            </div>
+
+            <div class="docs-endpoint" id="doc-list-providers">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/providers</span>
+                <span class="desc" data-i18n="docs.list_providers_desc">列出所有已注册渠道</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"providers"</span>: [
+    { <span class="ck">"name"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"displayName"</span>: <span class="cs">"Mail.tm"</span>,
+      <span class="ck">"type"</span>: <span class="cs">"api"</span>, <span class="ck">"tier"</span>: <span class="cs">"free"</span>,
+      <span class="ck">"trustLevel"</span>: <span class="cv">3</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"autoDispatch"</span>: <span class="cv">true</span>,
+      <span class="ck">"rateLimit"</span>: { <span class="ck">"createPerMinute"</span>: <span class="cv">10</span>, <span class="ck">"pollPerMinute"</span>: <span class="cv">30</span> },
+      <span class="ck">"features"</span>: { <span class="ck">"pollInbox"</span>: <span class="cv">true</span>, ... },
+      <span class="ck">"rateStatus"</span>: { <span class="ck">"currentCount"</span>: <span class="cv">2</span>, <span class="ck">"maxPerWindow"</span>: <span class="cv">10</span> } }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-get-provider">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/providers/:name</span>
+                <span class="desc" data-i18n="docs.get_provider_desc">获取渠道详情（含域名、统计）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"name"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"displayName"</span>: <span class="cs">"Mail.tm"</span>,
+  <span class="ck">"domains"</span>: [<span class="cs">"dpptd.com"</span>, <span class="cs">"exelica.com"</span>],
+  <span class="ck">"stats"</span>: {
+    <span class="ck">"success_count"</span>: <span class="cv">42</span>, <span class="ck">"fail_count"</span>: <span class="cv">3</span>,
+    <span class="ck">"last_success_at"</span>: <span class="cs">"..."</span>, <span class="ck">"last_error"</span>: <span class="cs">"..."</span>
+  },
+  <span class="ck">"rateStatus"</span>: { ... }
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-patch-provider">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-patch">PATCH</span>
+                <span class="path">/api/providers/:name</span>
+                <span class="desc" data-i18n="docs.patch_provider_desc">更新渠道配置</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">enabled</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.patch_provider_param_enabled">启用/禁用渠道</td></tr>
+                    <tr><td class="param-name">autoDispatch</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.patch_provider_param_autoDispatch">是否参与自动调度（付费渠道默认关闭，需显式指定 <code>provider</code> 才使用）</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-note is-warn" data-i18n-html="docs.patch_provider_priority_gone">旧的 <code>priority</code> 字段已移除，再传会返回 400；调度顺序改由下面的 <code>/api/dispatch/rules</code> 管理。</div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span>, <span class="ck">"enabled"</span>: <span class="cv">true</span>, <span class="ck">"autoDispatch"</span>: <span class="cv">false</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-dispatch-preview">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/dispatch/preview</span>
+                <span class="desc" data-i18n="docs.dispatch_preview_desc">预演自动调度：这一单会按什么顺序试、谁会被跳过</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">for</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.dispatch_preview_param_for">目标服务；不填则按全局顺序</td></tr>
+                    <tr><td class="param-name">needPolling</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.dispatch_preview_param_polling">默认 true；为 false 时不跳过不支持轮询的渠道</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-note" data-i18n="docs.dispatch_preview_note">纯本地计算，不调用任何上游，不改任何状态。域名封禁在创建时才过滤，预演不包含。</div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>,
+  <span class="ck">"rule"</span>: { <span class="ck">"source"</span>: <span class="cs">"service"</span>, <span class="ck">"others"</span>: <span class="cs">"append"</span> },
+  <span class="ck">"candidates"</span>: [
+    { <span class="ck">"provider"</span>: <span class="cs">"outlook"</span>, <span class="ck">"eligible"</span>: <span class="cv">true</span> },
+    { <span class="ck">"provider"</span>: <span class="cs">"mailtm"</span>, <span class="ck">"eligible"</span>: <span class="cv">false</span>, <span class="ck">"reason"</span>: <span class="cs">"cooldown"</span>,
+      <span class="ck">"cooldownReason"</span>: <span class="cs">"rate-limit"</span>, <span class="ck">"nextAvailableAt"</span>: <span class="cs">"2026-10-12T09:15:00.000Z"</span> },
+    { <span class="ck">"provider"</span>: <span class="cs">"icloud"</span>, <span class="ck">"eligible"</span>: <span class="cv">false</span>, <span class="ck">"reason"</span>: <span class="cs">"manual_only"</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.dispatch_reasons"><code>source</code>：<code>service</code> 有此服务的规则 / <code>global</code> 只有全局规则 / <code>default</code> 未保存任何规则（按信任度排）。<br><code>reason</code>：<code>unknown_provider</code> 规则里的名字当前未注册（如模板已停用）、<code>disabled</code>、<code>manual_only</code>（自动调度关闭且未被此服务的规则点名）、<code>no_polling</code>、<code>rate_limited</code>、<code>cooldown</code>。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-dispatch-rules">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/dispatch/rules</span>
+                <span class="desc" data-i18n="docs.dispatch_rules_desc">列出调度顺序规则（管理员）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"defaultOrder"</span>: [<span class="cs">"imap"</span>, <span class="cs">"icloud"</span>, <span class="cs">"outlook"</span>, <span class="cs">"yyds"</span>, <span class="cs">"mailtm"</span>, ...],
+  <span class="ck">"rules"</span>: [
+    { <span class="ck">"service"</span>: <span class="cs">"*"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"imap"</span>, ...], <span class="ck">"others"</span>: <span class="cs">"append"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> },
+    { <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"icloud"</span>], <span class="ck">"others"</span>: <span class="cs">"exclude"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.dispatch_rules_semantics"><code>*</code> 是全局顺序；没保存时用 <code>defaultOrder</code>（按信任度降序，同分按注册顺序）。规则里没列到的已注册渠道按注册顺序追加在末尾，新加的渠道不会悄悄不可达。某服务的规则列出的渠道排最前；<code>others</code> 为 <code>append</code> 时其余按全局顺序跟在后面，为 <code>exclude</code> 时只用列出的。被服务规则点名的渠道即使关闭了自动调度也会参与。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-put-dispatch-rule">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-put">PUT</span>
+                <span class="path">/api/dispatch/rules/:service</span>
+                <span class="desc" data-i18n="docs.put_dispatch_rule_desc">保存某服务（或 * 全局）的调度顺序（管理员）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">order</td><td class="param-type">string[]</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.put_dispatch_rule_param_order">渠道名数组，第一个最先试；不能重复；必须是已知渠道（已注册、曾注册过、或原规则里已有）</td></tr>
+                    <tr><td class="param-name">others</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.put_dispatch_rule_param_others"><code>append</code>（默认）或 <code>exclude</code>；对 <code>*</code> 恒为 append</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"service"</span>: <span class="cs">"twitter.com"</span>, <span class="ck">"order"</span>: [<span class="cs">"outlook"</span>, <span class="cs">"icloud"</span>], <span class="ck">"others"</span>: <span class="cs">"exclude"</span>, <span class="ck">"updatedAt"</span>: <span class="cs">"..."</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-delete-dispatch-rule">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/dispatch/rules/:service</span>
+                <span class="desc" data-i18n="docs.delete_dispatch_rule_desc">删除规则（管理员）；删 * 即恢复默认顺序</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-get-domains">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/providers/:name/domains</span>
+                <span class="desc" data-i18n="docs.get_domains_desc">获取渠道当前可用域名</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"provider"</span>: <span class="cs">"mailtm"</span>,
+  <span class="ck">"domains"</span>: [<span class="cs">"dpptd.com"</span>, <span class="cs">"exelica.com"</span>]
+}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Outlook 账号池 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.outlook_title">Outlook 账号池</h2>
+            <p data-i18n="docs.outlook_desc">Outlook 是池化渠道：从预导入的账号中分配邮箱，而非创建新邮箱。需先通过导入接口补充账号池。</p>
+
+            <div class="docs-endpoint" id="doc-ol-stats">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/stats</span>
+                <span class="desc" data-i18n="docs.ol_stats_desc">账号池统计</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"total"</span>: <span class="cv">50</span>,
+  <span class="ck">"available"</span>: <span class="cv">35</span>,
+  <span class="ck">"assigned"</span>: <span class="cv">15</span>,
+  <span class="ck">"validToken"</span>: <span class="cv">42</span>,
+  <span class="ck">"invalidToken"</span>: <span class="cv">3</span>,
+  <span class="ck">"pendingOAuth"</span>: <span class="cv">2</span>,
+  <span class="ck">"noToken"</span>: <span class="cv">0</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-import">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/import</span>
+                <span class="desc" data-i18n="docs.ol_import_desc">批量导入账号</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">accounts</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n-html="docs.ol_import_param_accounts">每行一个账号，支持：<code>邮箱----密码</code> 或 <code>邮箱----密码----ClientID----refresh_token</code>。</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"imported"</span>: <span class="cv">10</span>,
+  <span class="ck">"skipped"</span>: <span class="cv">2</span>,
+  <span class="ck">"errors"</span>: [<span class="cs" data-i18n="docs.example_format_error">格式错误: ...</span>]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.ol_import_note">分隔符为 <code>----</code>（4 个减号）。未完成授权的账号会进入待授权状态，可在账号列表中补全。已存在的邮箱会被跳过（INSERT OR IGNORE）。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-list">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/accounts</span>
+                <span class="desc" data-i18n="docs.ol_list_desc">查询账号列表</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">status</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.ol_list_param_status">令牌状态：<code>valid</code>、<code>invalid</code>、<code>pending_oauth</code>、<code>no_token</code></td></tr>
+                    <tr><td class="param-name">available</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.ol_list_param_available"><code>true</code> 只看空闲，<code>false</code> 只看已分配</td></tr>
+                    <tr><td class="param-name">group</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.ol_list_param_group">按分组名筛选</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"accounts"</span>: [
+    { <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"token_status"</span>: <span class="cs">"valid"</span>,
+      <span class="ck">"assigned_inbox_id"</span>: <span class="cv">null</span>, <span class="ck">"group_name"</span>: <span class="cs" data-i18n="docs.example_default_group">未分组</span>,
+      <span class="ck">"created_at"</span>: <span class="cs">"..."</span>, <span class="ck">"token_renewed_at"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-mailbox">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/accounts/:email/mailbox</span>
+                <span class="desc" data-i18n="docs.ol_mailbox_desc">查看账号邮箱的全部邮件</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.query_params">查询参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">limit</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.ol_mailbox_param_limit">取回的邮件条数，默认 50，最大 100</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"limit"</span>: <span class="cv">50</span>, <span class="ck">"truncated"</span>: <span class="cv">false</span>,
+  <span class="ck">"messages"</span>: [
+    { <span class="ck">"id"</span>: <span class="cs">"..."</span>, <span class="ck">"from"</span>: <span class="cs">"..."</span>, <span class="ck">"subject"</span>: <span class="cs">"..."</span>, <span class="ck">"receivedAt"</span>: <span class="cs">"..."</span>,
+      <span class="ck">"leaseId"</span>: <span class="cs">"i-abc123"</span>, <span class="ck">"leaseState"</span>: <span class="cs">"lease"</span> }
+  ],
+  <span class="ck">"leases"</span>: [
+    { <span class="ck">"id"</span>: <span class="cs">"i-abc123"</span>, <span class="ck">"address"</span>: <span class="cs">"user+tag@outlook.com"</span>, <span class="ck">"targetService"</span>: <span class="cs">"github"</span>,
+      <span class="ck">"createdAt"</span>: <span class="cs">"..."</span>, <span class="ck">"endedAt"</span>: <span class="cv">null</span>, <span class="ck">"status"</span>: <span class="cs">"active"</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.ol_mailbox_note">管理员专用。<code>/api/inbox/:id/messages</code> 只返回该邮箱在这一次租期内收到的邮件，这条接口返回整个账号邮箱。每封邮件带 <code>leaseState</code>：<code>lease</code>（属于 <code>leaseId</code> 那次租期）、<code>gap</code>（两次租期之间，账号空闲）、<code>before</code>（第一次租期之前）、<code>undated</code>（没有可解析的时间）。<code>limit</code> 是硬上限而不是分页：更早的邮件取不回来，取满时 <code>truncated</code> 为 <code>true</code>。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-mailbox-detail">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/accounts/:email/mailbox/:messageId</span>
+                <span class="desc" data-i18n="docs.ol_mailbox_detail_desc">读取账号邮箱中的一封邮件</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"id"</span>: <span class="cs">"..."</span>, <span class="ck">"from"</span>: <span class="cs">"..."</span>, <span class="ck">"subject"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"receivedAt"</span>: <span class="cs">"..."</span>, <span class="ck">"text"</span>: <span class="cs">"..."</span>, <span class="ck">"html"</span>: <span class="cs">"..."</span>
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.ol_mailbox_detail_note">管理员专用，不受租期限制。<code>/api/inbox/:id/messages/:mid</code> 对租期外的邮件返回 404，这条接口能打开它们。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-delete">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/outlook/accounts</span>
+                <span class="desc" data-i18n="docs.ol_delete_desc">批量删除账号（仅未分配的）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">emails</td><td class="param-type">string[]</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.ol_delete_param_emails">要删除的邮箱地址列表</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"deleted"</span>: <span class="cv">3</span>,
+  <span class="ck">"requested"</span>: <span class="cv">5</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_delete_note">已分配给活跃邮箱的账号无法删除，需先关闭对应邮箱释放账号。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-check">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/check</span>
+                <span class="desc" data-i18n="docs.ol_check_desc">批量检测令牌有效性</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">emails</td><td class="param-type">string[]</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.ol_check_param_emails">要检测的邮箱列表，不传则检测全部</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"checked"</span>: <span class="cv">10</span>,
+  <span class="ck">"valid"</span>: <span class="cv">8</span>,
+  <span class="ck">"invalid"</span>: <span class="cv">2</span>,
+  <span class="ck">"results"</span>: [
+    { <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"valid"</span>: <span class="cv">true</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_check_note">检测原理：使用已保存的授权凭据向 Microsoft 验证，成功即有效。会同步更新数据库中的 token_status 字段。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-renew">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/renew</span>
+                <span class="desc" data-i18n="docs.ol_renew_desc">批量续期令牌</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">emails</td><td class="param-type">string[]</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.ol_renew_param_emails">要续期的邮箱列表，不传则全部续期</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"total"</span>: <span class="cv">10</span>,
+  <span class="ck">"renewed"</span>: <span class="cv">9</span>,
+  <span class="ck">"failed"</span>: <span class="cv">1</span>,
+  <span class="ck">"results"</span>: [
+    { <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"renewed"</span>: <span class="cv">true</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_renew_note">续期会刷新已保存的授权凭据。Microsoft 授权有有效期，建议定期续期。续期成功后 token_status 自动更新为 valid。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-start">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/start</span>
+                <span class="desc" data-i18n="docs.ol_oauth_start_desc">创建授权补全会话</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>,
+  <span class="ck">"preset"</span>: <span class="cs">"thunderbird"</span>
+}</pre>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"authorizeUrl"</span>: <span class="cs">"https://..."</span>,
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>,
+  <span class="ck">"preset"</span>: <span class="cs">"thunderbird"</span>,
+  <span class="ck">"redirectUri"</span>: <span class="cs">"https://localhost"</span>,
+  <span class="ck">"serverProxyConfigured"</span>: <span class="cv">true</span>,
+  <span class="ck">"status"</span>: <span class="cs">"pending"</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_oauth_start_note">默认使用内置授权预设；自定义 OAuth App 仍可通过 API 传入 custom 配置。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-code">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/code</span>
+                <span class="desc" data-i18n="docs.ol_oauth_code_desc">提交授权回跳结果</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"finalUrl"</span>: <span class="cs">"https://localhost/?code=...&amp;state=..."</span>
+}</pre>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"ok"</span>: <span class="cv">true</span>,
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>,
+  <span class="ck">"status"</span>: <span class="cs">"completed"</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_oauth_code_note">也可以提交 code + state。敏感令牌只写入服务端，不会在响应中返回。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-status">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/oauth/status/:sessionId</span>
+                <span class="desc" data-i18n="docs.ol_oauth_status_desc">查询授权补全状态</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>,
+  <span class="ck">"preset"</span>: <span class="cs">"thunderbird"</span>,
+  <span class="ck">"status"</span>: <span class="cs">"completed"</span>,
+  <span class="ck">"error"</span>: <span class="cs">""</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-password">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/password</span>
+                <span class="desc" data-i18n="docs.ol_oauth_manual_password_desc">读取待补全账号密码</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{ <span class="ck">"sessionId"</span>: <span class="cs">"..."</span> }</pre>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"password"</span>: <span class="cs">"..."</span> }</pre>
+                <div class="docs-note" data-i18n="docs.ol_oauth_manual_password_note">管理员接口，仅用于 pending/no_token 账号的授权补全辅助，不返回任何令牌。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-callback">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/outlook/oauth/callback</span>
+                <span class="desc" data-i18n="docs.ol_oauth_callback_desc">自定义 OAuth 回调</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-note" data-i18n="docs.ol_oauth_callback_note">仅用于自定义 OAuth App 兼容流程。默认补全路径使用外部回跳 URL 提交接口。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-automation-claim">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/automation/claim</span>
+                <span class="desc" data-i18n="docs.ol_oauth_claim_desc">领取待补全任务</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{ <span class="ck">"preset"</span>: <span class="cs">"thunderbird"</span>, <span class="ck">"includeProxy"</span>: <span class="cv">true</span>, <span class="ck">"includeFailed"</span>: <span class="cv">false</span> }</pre>
+                <div class="docs-note" data-i18n-html="docs.ol_oauth_claim_note">默认跳过带有 <code>oauth_last_error</code> 的失败账号；只有明确重试失败任务时才传 <code>includeFailed: true</code>。</div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"authorizeUrl"</span>: <span class="cs">"https://..."</span>,
+  <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>,
+  <span class="ck">"redirectUri"</span>: <span class="cs">"https://localhost"</span>,
+  <span class="ck">"serverProxyConfigured"</span>: <span class="cv">true</span>,
+  <span class="ck">"proxyUrl"</span>: <span class="cs">"http://user:pass@host:port"</span>,
+  <span class="ck">"status"</span>: <span class="cs">"pending"</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-automation-password">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/automation/password</span>
+                <span class="desc" data-i18n="docs.ol_oauth_password_desc">读取已领取任务密码</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{ <span class="ck">"sessionId"</span>: <span class="cs">"..."</span> }</pre>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"email"</span>: <span class="cs">"user@outlook.com"</span>, <span class="ck">"password"</span>: <span class="cs">"..."</span> }</pre>
+                <div class="docs-note" data-i18n="docs.ol_oauth_password_note">管理员接口，仅用于外部自动化对已领取任务的安全取用。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ol-oauth-automation-report">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/outlook/oauth/automation/report</span>
+                <span class="desc" data-i18n="docs.ol_oauth_report_desc">上报自动化状态</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <pre class="docs-code">{
+  <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>,
+  <span class="ck">"status"</span>: <span class="cs">"waiting_user"</span>,
+  <span class="ck">"error"</span>: <span class="cs">""</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ol_oauth_report_note">状态可为 started、waiting_user、failed、completed。令牌写入仍由授权 code 提交流程完成。</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── YYDS Mail 池 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.yyds_title">YYDS Mail 池</h2>
+            <p data-i18n-html="docs.yyds_desc">YYDS Mail 是池化渠道：通过多个 API Key 调用上游 <a href="https://maliapi.215.im/v1/llms.txt" target="_blank">YYDS Mail API</a> 创建临时邮箱。支持固定域名和泛子域名（wildcard），每个 Key 每日 20,000 次调用配额。所有 YYDS 管理接口仅限管理员调用。</p>
+
+            <div class="docs-endpoint" id="doc-yd-stats">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/yyds/stats</span>
+                <span class="desc" data-i18n="docs.yd_stats_desc">Key 池统计</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"total"</span>: <span class="cv">10</span>,
+  <span class="ck">"active"</span>: <span class="cv">8</span>,
+  <span class="ck">"invalid"</span>: <span class="cv">2</span>,
+  <span class="ck">"totalInboxes"</span>: <span class="cv">156</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-yd-import">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/yyds/import</span>
+                <span class="desc" data-i18n="docs.yd_import_desc">批量导入 API Key</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">accounts</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n-html="docs.yd_import_param_accounts">每行一个 Key，格式：<code>API-KEY----备注名</code>（<code>----</code> 分隔）</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"imported"</span>: <span class="cv">5</span>,
+  <span class="ck">"duplicated"</span>: <span class="cv">2</span>,
+  <span class="ck">"skipped"</span>: <span class="cv">0</span>,
+  <span class="ck">"errors"</span>: []
+}</pre>
+                <div class="docs-note" data-i18n="docs.yd_import_note">已存在的 Key 会被跳过（INSERT OR IGNORE）。备注名可选。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-yd-list">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/yyds/accounts</span>
+                <span class="desc" data-i18n="docs.yd_list_desc">列出所有 Key</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"accounts"</span>: [
+    { <span class="ck">"api_key"</span>: <span class="cs">"AC-xxxx..."</span>, <span class="ck">"name"</span>: <span class="cs" data-i18n="docs.example_primary_key">主力Key</span>,
+      <span class="ck">"status"</span>: <span class="cs">"active"</span>, <span class="ck">"supports_wildcard"</span>: <span class="cv">1</span>,
+      <span class="ck">"inbox_count"</span>: <span class="cv">42</span>, <span class="ck">"daily_calls"</span>: <span class="cv">1500</span>,
+      <span class="ck">"last_used_at"</span>: <span class="cs">"..."</span>, <span class="ck">"created_at"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-yd-delete">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/yyds/accounts</span>
+                <span class="desc" data-i18n="docs.yd_delete_desc">批量删除 Key</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">keys</td><td class="param-type">string[]</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.yd_delete_param_keys">要删除的 API Key 数组</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"deleted"</span>: <span class="cv">3</span>,
+  <span class="ck">"requested"</span>: <span class="cv">3</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-yd-check">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/yyds/check</span>
+                <span class="desc" data-i18n="docs.yd_check_desc">验证 Key 有效性</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">keys</td><td class="param-type">string[]</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.yd_check_param_keys">指定检测的 Key，不填则检测全部</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"checked"</span>: <span class="cv">10</span>,
+  <span class="ck">"valid"</span>: <span class="cv">8</span>,
+  <span class="ck">"invalid"</span>: <span class="cv">2</span>,
+  <span class="ck">"results"</span>: [{ <span class="ck">"key"</span>: <span class="cs">"AC-xxxx"</span>, <span class="ck">"valid"</span>: <span class="cv">true</span> }, ...]
+}</pre>
+                <div class="docs-note" data-i18n="docs.yd_check_note">通过向上游 API 发送探测请求来判断 Key 是否仍然有效，结果同步更新到数据库 status 字段。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-yd-wildcard">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-patch">PATCH</span>
+                <span class="path">/api/yyds/accounts/wildcard</span>
+                <span class="desc" data-i18n="docs.yd_wildcard_desc">设置 Wildcard 支持</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">keys</td><td class="param-type">string[]</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.yd_wildcard_param_keys">要设置的 API Key 数组</td></tr>
+                    <tr><td class="param-name">wildcard</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n-html="docs.yd_wildcard_param_wildcard">是否支持泛子域名，默认 <code>false</code></td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"updated"</span>: <span class="cv">3</span>,
+  <span class="ck">"wildcard"</span>: <span class="cv">true</span>
+}</pre>
+                <div class="docs-note" data-i18n-html="docs.yd_wildcard_note">通常不需要手动设置。系统会在创建邮箱时自动探测 Key 是否支持 wildcard，并记录结果（<code>supports_wildcard</code> 字段：<code>null</code>=未知, <code>0</code>=不支持, <code>1</code>=支持）。</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── IMAP 域名邮箱 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.imap_title">IMAP 域名邮箱</h2>
+            <p data-i18n-html="docs.imap_desc">通过 IMAP 连接你自己的域名邮箱，利用 catch-all 机制为每个收件箱生成一个地址，再按收件人从共用邮箱里分拣，因此一个邮箱可同时支撑多个收件箱。生成的地址是人名形态（<code>nathanlambert@</code>、<code>lisa.chen@</code>、<code>d_watson91@</code>）而非随机字符串，已被占用的地址不会重复发放；传 <code>username</code> 可自己指定。添加账号后，在创建邮箱时指定 <code>provider: "imap"</code> 即可通过自己的域名收验证码。所有 IMAP 管理接口仅限管理员调用。</p>
+
+            <div class="docs-endpoint" id="doc-im-stats">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/imap/stats</span>
+                <span class="desc" data-i18n="docs.im_stats_desc">池统计</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"total"</span>: <span class="cv">3</span>,
+  <span class="ck">"active"</span>: <span class="cv">2</span>
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-list">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/imap/accounts</span>
+                <span class="desc" data-i18n="docs.im_list_desc">列出所有 IMAP 账号</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"accounts"</span>: [
+    { <span class="ck">"id"</span>: <span class="cs">"uuid"</span>, <span class="ck">"host"</span>: <span class="cs">"imap.gmail.com"</span>,
+      <span class="ck">"port"</span>: <span class="cv">993</span>, <span class="ck">"user"</span>: <span class="cs">"me@gmail.com"</span>,
+      <span class="ck">"domain"</span>: <span class="cs">"mydomain.com"</span>, <span class="ck">"tls"</span>: <span class="cv">1</span>,
+      <span class="ck">"status"</span>: <span class="cs">"active"</span>, <span class="ck">"last_checked_at"</span>: <span class="cs">"..."</span>,
+      <span class="ck">"created_at"</span>: <span class="cs">"..."</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n="docs.im_list_note">密码不会在列表或详情响应中返回。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-list-one">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/imap/accounts/:id</span>
+                <span class="desc" data-i18n="docs.im_list_one_desc">查看单个 IMAP 账号详情</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"account"</span>: {
+    <span class="ck">"id"</span>: <span class="cs">"uuid"</span>, <span class="ck">"host"</span>: <span class="cs">"imap.gmail.com"</span>,
+    <span class="ck">"port"</span>: <span class="cv">993</span>, <span class="ck">"user"</span>: <span class="cs">"me@gmail.com"</span>,
+    <span class="ck">"domain"</span>: <span class="cs">"mydomain.com"</span>, <span class="ck">"tls"</span>: <span class="cv">1</span>,
+    <span class="ck">"status"</span>: <span class="cs">"active"</span>
+  }
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-add">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/imap/accounts</span>
+                <span class="desc" data-i18n="docs.im_add_desc">添加 IMAP 账号</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">host</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.im_add_param_host">IMAP 服务器地址</td></tr>
+                    <tr><td class="param-name">port</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_port">端口，默认 993</td></tr>
+                    <tr><td class="param-name">user</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.im_add_param_user">邮箱用户名</td></tr>
+                    <tr><td class="param-name">password</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.im_add_param_password">邮箱密码或应用专用密码</td></tr>
+                    <tr><td class="param-name">domain</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.im_add_param_domain">收件域名（需开启 catch-all）</td></tr>
+                    <tr><td class="param-name">tls</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_tls">是否启用 TLS，默认 true</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_201">响应 201</div>
+                <pre class="docs-code">{
+  <span class="ck">"account"</span>: {
+    <span class="ck">"id"</span>: <span class="cs">"uuid"</span>, <span class="ck">"host"</span>: <span class="cs">"imap.gmail.com"</span>,
+    <span class="ck">"port"</span>: <span class="cv">993</span>, <span class="ck">"user"</span>: <span class="cs">"me@gmail.com"</span>,
+    <span class="ck">"domain"</span>: <span class="cs">"mydomain.com"</span>, <span class="ck">"tls"</span>: <span class="cv">1</span>,
+    <span class="ck">"status"</span>: <span class="cs">"active"</span>
+  }
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-update">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-put">PUT</span>
+                <span class="path">/api/imap/accounts/:id</span>
+                <span class="desc" data-i18n="docs.im_update_desc">更新 IMAP 账号</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <p class="fs-base text-2" data-i18n="docs.im_update_note">所有字段均可选，只更新传入的字段。</p>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">host</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_host">IMAP 服务器地址</td></tr>
+                    <tr><td class="param-name">port</td><td class="param-type">number</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_port">端口</td></tr>
+                    <tr><td class="param-name">user</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_user">邮箱用户名</td></tr>
+                    <tr><td class="param-name">password</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_password">邮箱密码</td></tr>
+                    <tr><td class="param-name">domain</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_domain">收件域名</td></tr>
+                    <tr><td class="param-name">tls</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_add_param_tls">是否启用 TLS</td></tr>
+                    <tr><td class="param-name">status</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.im_update_param_status">状态：active / inactive</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-section-title" data-i18n="docs.icloud_pool">iCloud 别名</div>
+            <div class="docs-note" data-i18n="docs.ic_intro">隐藏邮件是转发别名，不是信箱：Apple 没有按别名读信的 API。所以这个渠道分两半——签发地址走 Apple 私有接口，收信走「转发目标信箱」的 IMAP。转发目标常常不是 Apple 信箱（Apple ID 用 gmail 注册时就得连 imap.gmail.com）。需要 iCloud+ 订阅；一个 Apple ID 一辈子 750 个地址，所以地址回收复用而不是用完即弃。</div>
+
+            <div class="docs-endpoint" id="doc-ic-list">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/icloud/accounts</span>
+                <span class="desc" data-i18n="docs.ic_list_desc">列出所有 Apple ID</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"accounts"</span>: <span class="cs">[</span>
+    { <span class="ck">"id"</span>: <span class="cs">"uuid"</span>, <span class="ck">"apple_id"</span>: <span class="cs">"me@gmail.com"</span>,
+      <span class="ck">"region"</span>: <span class="cs">"global"</span>, <span class="ck">"auth_mode"</span>: <span class="cs">"srp"</span>,
+      <span class="ck">"imap_host"</span>: <span class="cs">"imap.gmail.com"</span>, <span class="ck">"imap_user"</span>: <span class="cs">"me@gmail.com"</span>,
+      <span class="ck">"status"</span>: <span class="cs">"active"</span>, <span class="ck">"last_error"</span>: <span class="cs">null</span> }
+  ]
+}</pre>
+                <div class="docs-note" data-i18n="docs.ic_status_note">status 三态：active 两半都通；degraded 会话过期，池里现有地址照常收信但不能签发新的；error 收信不可用，调度会跳过。Cookie、Apple ID 密码、信任令牌、IMAP 密码一律不返回。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-add">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/accounts</span>
+                <span class="desc" data-i18n="docs.ic_add_desc">添加 Apple ID</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.request_body">请求体</div>
+                <pre class="docs-code">{
+  <span class="ck">"appleId"</span>: <span class="cs">"me@gmail.com"</span>,
+  <span class="ck">"region"</span>: <span class="cs">"global"</span>,
+  <span class="ck">"cookies"</span>: <span class="cs" data-i18n="docs.example_paste_whole">"&lt;整坨粘贴&gt;"</span>,
+  <span class="ck">"imapUser"</span>: <span class="cs">"me@gmail.com"</span>,
+  <span class="ck">"imapPassword"</span>: <span class="cs" data-i18n="docs.example_app_password">"&lt;应用专用密码&gt;"</span>,
+  <span class="ck">"imapHost"</span>: <span class="cs">"imap.gmail.com"</span>,
+  <span class="ck">"imapPort"</span>: <span class="cv">993</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ic_add_note">cookies 接受浏览器给的任何形式：复制为 cURL（任意 shell）、复制为 PowerShell、Cookie 扩展导出的 JSON、或纯 Cookie 请求头。缺 X-APPLE-WEBAUTH-TOKEN 或 X-APPLE-WEBAUTH-USER 会直接 400 并指名缺哪个，而不是存下来等以后失败。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-test">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/accounts/:id/test</span>
+                <span class="desc" data-i18n="docs.ic_test_desc">同时检测签发与收信两半</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"ok"</span>: <span class="cv">false</span>,
+  <span class="ck">"forwardTo"</span>: <span class="cs">"me@gmail.com"</span>,
+  <span class="ck">"forwardMismatch"</span>: <span class="cs">null</span>,
+  <span class="ck">"hmeError"</span>: <span class="cs">null</span>,
+  <span class="ck">"imapError"</span>: <span class="cs">"authentication rejected: ..."</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.ic_test_note">两半的错误分开返回，因为它们在不同地方修：Cookie 归 Apple 网页，IMAP 密码归收信邮箱的服务商。forwardTo 是隐藏邮件实际投递到的信箱，跟 IMAP 登录名不一致时 forwardMismatch 会直说。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-cookies">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/accounts/:id/cookies</span>
+                <span class="desc" data-i18n="docs.ic_cookies_desc">就地更换过期 Cookie</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-note" data-i18n="docs.ic_cookies_note">保留地址池。删号重建会把它持有的每一个别名一起烧掉——每个都占 750 名额中的一个。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-srp">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/accounts/:id/srp/begin</span>
+                <span class="desc" data-i18n="docs.ic_srp_desc">SRP 登录，用信任令牌取代 Cookie</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.request_body">请求体</div>
+                <pre class="docs-code">{ <span class="ck">"password"</span>: <span class="cs" data-i18n="docs.example_appleid_password">"&lt;Apple ID 密码&gt;"</span> }
+→ { <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>, <span class="ck">"needsMfa"</span>: <span class="cv">true</span> }</pre>
+                <div class="docs-label" data-i18n="docs.ic_srp_then">随后</div>
+                <pre class="docs-code">GET  /api/icloud/srp/:sessionId/phones      <span class="cc" data-i18n="docs.example_phones_optional">// 可选：手机号列表</span>
+POST /api/icloud/srp/:sessionId/sms         { <span class="ck">"phoneId"</span>: <span class="cv">1</span> }
+POST /api/icloud/accounts/:id/srp/complete  { <span class="ck">"sessionId"</span>: <span class="cs">"..."</span>, <span class="ck">"code"</span>: <span class="cs">"123456"</span> }</pre>
+                <div class="docs-note" data-i18n="docs.ic_srp_note">Cookie 几小时过期，信任令牌能撑很久，所以 6 位码是每个 Apple ID 输一次而不是每次会话输一次。Apple 认可已存的信任令牌时 needsMfa 为 false，根本不推码。会话 5 分钟过期；握手中间态在内存里，这期间重启会丢失，重新登录即可。手边没有苹果设备时用 phones + sms 走短信。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-generate">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/accounts/:id/generate</span>
+                <span class="desc" data-i18n="docs.ic_generate_desc">立刻生成地址（手动补货）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.request_body">请求体</div>
+                <pre class="docs-code">{ <span class="ck">"count"</span>: <span class="cv">1</span> }   <span class="cc" data-i18n="docs.example_at_most_5">// 最多 5</span>
+→ { <span class="ck">"created"</span>: <span class="cv">1</span>, <span class="ck">"addresses"</span>: <span class="cs">["quiet.fox42@icloud.com"]</span> }</pre>
+                <div class="docs-note" data-i18n="docs.ic_generate_note">常规路径是后台自动补货，这个是应急用的。Apple 拒绝时原样返回它自己的措辞——它的错误分类没有公开文档，不做臆测的归类。自动补货的开关和目标值在 iCloud 页面上，或走 PATCH /api/admin/settings 的 icloud_pool_enabled / icloud_pool_target（目标值钳到 750）。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-addresses">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/icloud/addresses</span>
+                <span class="desc" data-i18n="docs.ic_addresses_desc">地址池</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-note" data-i18n="docs.ic_addresses_note">state 三态：free 在池中可领用；assigned 被某个活着的 inbox 持有；retired 已在 Apple 侧停用、永不再发，它占的名额也永久花掉了。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-mail">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/icloud/addresses/:hme/messages</span>
+                <span class="desc" data-i18n="docs.ic_mail_desc">按地址读信（含 /:uid 详情）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-note" data-i18n="docs.ic_mail_note">这个地址收到过的所有邮件，不像 /api/inbox/:id/messages 会隐藏比 inbox 更早的信。用来回答「这个地址到底收到过东西没有」。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-ic-retire">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/icloud/addresses/:hme/retire</span>
+                <span class="desc" data-i18n="docs.ic_retire_desc">停用被烧掉的地址</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-note" data-i18n="docs.ic_retire_note">在 Apple 侧关闭转发并永不再分配。有 inbox 正持有时返回 409。它占的那个名额不会还回来——750 是一个 Apple ID 一辈子的总数。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-delete">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/imap/accounts/:id</span>
+                <span class="desc" data-i18n="docs.im_delete_desc">删除 IMAP 账号</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+                <div class="docs-note" data-i18n="docs.im_delete_note">删除账号不会影响已有的收件箱记录，但那些收件箱将无法继续拉取邮件。</div>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-im-test">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/imap/accounts/:id/test</span>
+                <span class="desc" data-i18n="docs.im_test_desc">测试 IMAP 连接</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"ok"</span>: <span class="cv">true</span>
+}</pre>
+                <pre class="docs-code">{
+  <span class="ck">"ok"</span>: <span class="cv">false</span>,
+  <span class="ck">"error"</span>: <span class="cs">"connect ECONNREFUSED"</span>
+}</pre>
+                <div class="docs-note" data-i18n="docs.im_test_note">测试连接会尝试打开 INBOX，成功后更新 last_checked_at 时间戳。</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── 密钥管理 ── -->
+          <div class="docs-section">
+            <h2 data-i18n="docs.key_title">密钥管理</h2>
+            <p data-i18n-html="docs.key_desc">创建和管理 API Key。所有密钥管理接口仅限管理员（<code>API_SECRET</code>）调用，普通 Key 返回 403。</p>
+
+            <div class="docs-endpoint" id="doc-key-create">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-post">POST</span>
+                <span class="path">/api/keys</span>
+                <span class="desc" data-i18n="docs.key_create_desc">创建新密钥</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">name</td><td class="param-type">string</td><td><span class="param-req yes" data-i18n="docs.yes">是</span></td><td data-i18n="docs.key_create_param_name">备注名称（如"给小明"、"自动化脚本"）</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_201">响应 201</div>
+                <pre class="docs-code">{
+  <span class="ck">"key"</span>: <span class="cs">"mk_aBcDeFgHiJkLmNoPqRsTuVwXyZ012345"</span>,
+  <span class="ck">"keyHash"</span>: <span class="cs">"a1b2c3d4..."</span>,
+  <span class="ck">"name"</span>: <span class="cs" data-i18n="docs.example_key_name">API Key</span>,
+  <span class="ck">"callCount"</span>: <span class="cv">0</span>,
+  <span class="ck">"lastUsedAt"</span>: <span class="cv">null</span>,
+  <span class="ck">"active"</span>: <span class="cv">true</span>
+}</pre>
+                <p class="text-3 fs-base" data-i18n-html="docs.key_create_note">创建时返回明文 Key（<code>mk_</code> 前缀），之后仅可通过列表接口查看。<code>keyHash</code> 用于后续更新/删除操作。</p>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-key-list">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/api/keys</span>
+                <span class="desc" data-i18n="docs.key_list_desc">列出所有密钥（含完整 Key 和用量）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{
+  <span class="ck">"keys"</span>: [
+    { <span class="ck">"key"</span>: <span class="cs">"mk_aBcDeFgH..."</span>, <span class="ck">"keyHash"</span>: <span class="cs">"a1b2c3d4..."</span>,
+      <span class="ck">"name"</span>: <span class="cs" data-i18n="docs.example_key_name">API Key</span>, <span class="ck">"callCount"</span>: <span class="cv">42</span>,
+      <span class="ck">"lastUsedAt"</span>: <span class="cs">"2025-01-01T12:00:00.000Z"</span>,
+      <span class="ck">"createdAt"</span>: <span class="cs">"..."</span>, <span class="ck">"active"</span>: <span class="cv">true</span> }
+  ]
+}</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-key-update">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-patch">PATCH</span>
+                <span class="path">/api/keys/:keyHash</span>
+                <span class="desc" data-i18n="docs.key_update_desc">更新密钥（改名、启用/禁用）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.req_body_json">请求体 (JSON)</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.type">类型</th><th data-i18n="docs.required">必填</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody>
+                    <tr><td class="param-name">name</td><td class="param-type">string</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.key_update_param_name">新备注名</td></tr>
+                    <tr><td class="param-name">active</td><td class="param-type">boolean</td><td><span class="param-req no" data-i18n="docs.no">否</span></td><td data-i18n="docs.key_update_param_active">启用/禁用</td></tr>
+                  </tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+
+            <div class="docs-endpoint" id="doc-key-delete">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-delete">DELETE</span>
+                <span class="path">/api/keys/:keyHash</span>
+                <span class="desc" data-i18n="docs.key_delete_desc">删除密钥</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <div class="docs-label" data-i18n="docs.path_params">路径参数</div>
+                <div class="table-wrap fit"><table class="docs-param-table">
+                  <thead><tr><th data-i18n="docs.param">参数</th><th data-i18n="docs.description">说明</th></tr></thead>
+                  <tbody><tr><td class="param-name">keyHash</td><td data-i18n="docs.key_delete_param_keyHash">密钥哈希值（从列表接口获取）</td></tr></tbody>
+                </table></div>
+                <div class="docs-label" data-i18n="docs.response_200">响应 200</div>
+                <pre class="docs-code">{ <span class="ck">"ok"</span>: <span class="cv">true</span> }</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-section" id="doc-integration">
+            <h2 data-i18n="docs.integration_title">集成示例</h2>
+            <h3 data-i18n="docs.integration_typical">典型验证码获取流程</h3>
+            <pre class="docs-code"><span class="ck" data-i18n="docs.integration_step1">// 1. 创建邮箱（自动选择最优渠道，避开封禁域名）</span>
+const inbox = await fetch(<span class="cs">'/api/inbox'</span>, {
+  method: <span class="cs">'POST'</span>,
+  headers: { <span class="cs">'Content-Type'</span>: <span class="cs">'application/json'</span> },
+  body: JSON.stringify({ for: <span class="cs">'twitter.com'</span> })
+}).then(r => r.json());
+<span class="ck">// → { id: "aBcDeFgHiJkL", address: "random@domain.com", ... }</span>
+
+<span class="ck" data-i18n="docs.integration_step2">// 2. 用邮箱地址去目标服务注册/验证</span>
+
+<span class="ck" data-i18n="docs.integration_step3">// 3. 等待并提取验证码</span>
+const code = await fetch(<span class="cs">`/api/inbox/${inbox.id}/code?wait=true&timeout=60`</span>)
+  .then(r => r.json());
+<span class="ck">// → { codes: [{ type: "numeric", value: "483921", confidence: 0.95 }] }</span>
+
+<span class="ck" data-i18n="docs.integration_step4">// 4. 上报结果（喂给自动封禁规则和统计）</span>
+await fetch(<span class="cs">`/api/inbox/${inbox.id}/report`</span>, {
+  method: <span class="cs">'POST'</span>,
+  headers: { <span class="cs">'Content-Type'</span>: <span class="cs">'application/json'</span> },
+  body: JSON.stringify({ success: <span class="cv">true</span> })
+});
+
+<span class="ck">// 5. Close inbox</span>
+await fetch(<span class="cs">`/api/inbox/${inbox.id}`</span>, { method: <span class="cs">'DELETE'</span> });</pre>
+
+            <h3 data-i18n="docs.integration_curl_title">cURL 快速测试</h3>
+            <pre class="docs-code"><span class="ck"># Create inbox</span>
+curl -X POST http://localhost:3100/api/inbox \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{"for":"twitter.com"}'</span>
+
+<span class="ck" data-i18n="docs.integration_curl_wait_code"># 等待验证码</span>
+curl <span class="cs">"http://localhost:3100/api/inbox/YOUR_ID/code?wait=true&timeout=30"</span>
+
+<span class="ck" data-i18n="docs.integration_curl_outlook"># 指定 Outlook 渠道</span>
+curl -X POST http://localhost:3100/api/inbox \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{"provider":"outlook"}'</span>
+
+<span class="ck" data-i18n="docs.integration_curl_import"># 导入 Outlook 账号</span>
+curl -X POST http://localhost:3100/api/outlook/import \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d <span class="cs">'{"accounts":"user@outlook.com----pass123\\nuser2@outlook.com----pass123----clientid----refresh_token"}'</span></pre>
+          </div>
+
+          <!-- ── AI / LLM 集成 ── -->
+          <div class="docs-section" id="doc-llms">
+            <h2 data-i18n="docs.llms_title">AI / LLM 集成</h2>
+            <p data-i18n-html="docs.llms_desc">提供 <code>llms.txt</code> 端点，让 AI 助手（如 ChatGPT、Claude）快速理解公开集成面与认证方式，帮助您编写接入代码。</p>
+
+            <div class="docs-endpoint open">
+              <div class="docs-endpoint-header" data-on-click="toggleParentOpen" data-args='[{"$":"el"}]'>
+                <span class="method-tag m-get">GET</span>
+                <span class="path">/v1/llms.txt</span>
+                <span class="desc" data-i18n="docs.llms_endpoint_desc">获取 AI 可读的 API 摘要（无需认证）</span>
+              </div>
+              <div class="docs-endpoint-body">
+                <p data-i18n-html="docs.llms_response_desc">返回一份纯文本格式的公开 API 摘要，供 AI/LLM 快速理解外部可集成端点和认证方式。该端点<strong>无需认证</strong>，可直接访问。</p>
+                <div class="docs-label" data-i18n="docs.response_200_text">响应 200 (text/plain)</div>
+                <pre class="docs-code docs-code-scroll fs-sm"><span class="ck"># Mail Hub — Temporary Email Aggregation API</span>
+<span class="cs">&gt; Version: 0.9</span>
+
+<span class="ck">## Authentication</span>
+Authorization: Bearer &lt;your-api-key&gt;
+
+<span class="ck">## Typical Workflow</span>
+1. POST   /api/inbox          → Create inbox
+2. GET    /api/inbox/:id/code → Extract verification code
+3. POST   /api/inbox/:id/report → ⚠️ REPORT (MANDATORY!)
+4. DELETE /api/inbox/:id      → Close inbox
+<span class="cv" data-i18n="docs.example_llms_summary">... (完整端点文档，含参数与响应格式)</span></pre>
+                <div class="docs-note">
+                  <span data-i18n-html="docs.llms_usage_title"><strong>使用方式：</strong>在与 AI 助手对话时，告诉它读取此端点即可快速理解 Mail Hub 的全部公开 API。例如：<br></span>
+                  <code id="llms-example-url" class="docs-url bg-control fs-base text-2"></code>
+                </div>
+                <div class="docs-actions">
+                  <button class="btn btn-primary btn-sm" data-on-click="copyLlmsUrl" data-i18n="docs.llms_copy_btn">复制端点 URL</button>
+                  <a class="btn btn-sm" href="/v1/llms.txt" target="_blank" data-i18n="docs.llms_open_btn">在新标签页打开</a>
+        </div>
+      </div>
+    </div>
+          </div>
+
+        </div>
+      </div>
