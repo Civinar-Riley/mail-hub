@@ -113,4 +113,11 @@ describe('asset routes', () => {
     // API_SECRET is set in tests; an auth-guarded route would answer 401.
     expect((await realApp.request('/assets/css/not-there.css')).status).toBe(404);
   });
+
+  // The page requests /extensions.js on every visit, whether or not the file is present.
+  it('serves /extensions.js as a script whether or not the file is present', async () => {
+    const res = await realApp.request('/extensions.js');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toMatch(/javascript/);
+  });
 });

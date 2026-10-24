@@ -618,10 +618,11 @@ export function createApp(): Hono<AdminEnv> {
     return c.html(publicBundle.indexHtml);
   });
 
+  // The page always asks for /extensions.js; when the file is not present it gets an empty
+  // script, not a 404 that would show up as an error in the browser console.
   app.get('/extensions.js', (c) => {
-    if (!cachedExtensionsJs) return c.notFound();
     c.header('Content-Type', 'application/javascript; charset=utf-8');
-    return c.body(cachedExtensionsJs);
+    return c.body(cachedExtensionsJs || '// extensions.js not present\n');
   });
 
   registerAssetRoutes(app, publicBundle);
