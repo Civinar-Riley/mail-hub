@@ -140,7 +140,9 @@ function renderOlTable(rows) {
       <td class="cell-end"><div class="row-actions">${actions.join('')}${del}</div></td>
     </tr>`;
   }).join('');
-  if (_olStaggerNext) { _olStaggerNext = false; staggerRows(tbody); }
+  // Off: the loading skeleton now crossfades into the whole table, and staggering only the first
+  // rows on top of that made the lower rows land before the upper ones. Uncomment to bring it back.
+  // if (_olStaggerNext) { _olStaggerNext = false; staggerRows(tbody); }
 }
 
 function getOutlookOauthStatusText(status) {
