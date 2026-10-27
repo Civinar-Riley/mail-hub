@@ -346,6 +346,15 @@ GET /api/v2/inbox/demo/1        → 404 Route not found
 
 所以严格说：**它的收信能力我无法证实**。它能读箱，但读不到东西。
 
+### 顺带发现：GetNada 已经并进来了
+
+老牌的 **getnada.com 现在只是 Inboxes.com 的跳板**。实测直接打开 getnada.com，返回的
+HTML 里只有一段迁移脚本：读浏览器的 localStorage，POST 到
+`https://inboxes.com/api/v2/legacy/migration`，然后 `location.href = 'https://inboxes.com'`。
+
+所以"Nada"和"Inboxes.com"是同一家（inboxes.com 页脚也写着 © Nada™），老 getnada
+的账号被引导迁移过去。它的局限和 Inboxes.com 一样（没有详情接口），不用再单独调研。
+
 ### 手动使用的办法
 
 浏览器打开 https://inboxes.com，输名字即用。但**没有证据表明它能稳定收信**，不推荐依赖。
@@ -400,6 +409,13 @@ GET https://mailsac.com/api/addresses/demo@mailsac.com/messages
 | 10MinuteMail | 10minutemail.com | 403 Just a moment |
 | Tempail | tempail.com | 403 Just a moment |
 | Harakiri Mail | harakirimail.com | 403 Just a moment |
+| TrashMail | trashmail.com / trashmail.de | **403 Attention Required（硬拦截，连 JS 挑战都不是）** |
+
+> ⚠️ TrashMail 单独说一下：trashmail.com 现在 308 重定向到 `mail.aionda.com`，
+> 后者对 Node 和 curl 都直接回 **"Attention Required" + Cloudflare Ray ID**——
+> 这是 CF 的**拒绝访问页**，不是"Just a moment"那种 JS 挑战。区别在于：
+> JS 挑战理论上真浏览器过一次就能拿到 cookie，硬拦截是直接按 IP/指纹拉黑，
+> 浏览器打开也一样 403。这个网络环境下它属于彻底没门。
 
 这类服务**本身可能完全能用**（浏览器里打开就是正常邮箱），只是自动化接不进来。
 
@@ -419,8 +435,141 @@ GET https://mailsac.com/api/addresses/demo@mailsac.com/messages
 | YOPmail | 连接超时 |
 | Moakt | 404（可能改了接口） |
 | Tmailor | 返回 `{"msg":"error"}` |
+| generator.email | 连接超时（emailfake 同族的主域，本网络不通） |
+| Mailcatch | 连接超时 |
+| MinuteInbox | 连接超时 |
+| ThrowAwayMail | 连接超时 |
+| Ethereal Mail | 连接超时（Nodemailer 官方测试邮箱，海外开发者用得多） |
+| MyTemp.email | 连接超时 |
+| Dispostable | 连接超时 |
+| Rootsh | 连接超时 |
+| 24mail.chacuo.net | 连接超时（中文老牌临时邮箱，可能只对国内特定网络友好，本机也不通） |
+
+> ☠️ **FakeInbox 是另一种死法：域名活着，服务没了。** https://www.fakeinbox.com
+> 返回 200，但内容是一个 **WordPress 博客**（文章全是"Best VPN 2026"这类 SEO 内容，
+> 还开着 wp-json），原来的临时邮箱功能一点不剩。
+> 教训：**探活时别只看 HTTP 200，要看页面还是不是邮箱**。
 
 ---
+
+## 九、EmailFake —— 服务活着，但接口层层设卡
+
+**地址**：https://emailfake.com
+**性质**：老牌"假邮箱生成器"（generator.email / 10minutemail 等一大票站点的同族引擎），打开首页就自动分配一个随机邮箱（实测分到 `flamino@newbreedapps.com`），WebSocket 推新信提醒
+
+### 实测：网页是完整的，接口全是门禁
+
+我从它的前端 JS（`/js/inbox.js`）里挖出了全部内部接口：
+
+```
+GET  /api/domains.php          域名列表
+GET  /search.php?key=...       域名搜索
+POST /mark_remove.php          新信轮询：body "chekinbox=<地址>"，返回 0/1
+POST /mark_remove.php          标记已读：body "mark=<secret>"
+WSS  /notificon/ws?email=...   新信通知
+```
+
+**逐条实测的结果：**
+
+```
+1) curl https://emailfake.com/api/domains.php
+   → 403 "Origin/Referer required"
+
+2) 它自己的 JS 调这些接口时带两个头：
+   X-API-Token: apiToken()        ← 由 /__ab_fp2.js、ab_guard.js 等指纹脚本生成
+   X-Requested-With: XMLHttpRequest
+   403 时前端直接 location.reload() 换 token 重试
+
+3) 邮件列表本身不是接口——页面刷新后由服务端渲染进 HTML
+   （mark_remove.php 只回答"有没有新信"，拿到信靠 reload）
+
+4) 读单封邮件还要过验证码：inbox.js 里 fetchSource(..., '&cap=...&capt...')
+   未过验证码时弹 captcha，这是给非管理员读信的固定门槛
+```
+
+### 为什么接不进来
+
+**同时卡在"必须返回 JSON"和"无需交互式认证"两条：**
+
+1. 邮件列表和正文都没有 JSON 接口，列表是服务端渲染 HTML——和 Mailnesia 同一类问题
+2. 仅有的 JSON 接口（域名/搜索）被 Origin/Referer + 浏览器指纹 token 双重门禁挡住，Node 复现不了 token 生成
+3. 读信要过验证码——这一条连"手动自动化"都堵死了
+
+它比 Mailnesia 还难缠：Mailnesia 至少页面结构稳定可以爬，这里读信先要人机验证。
+
+### 手动使用的办法
+
+浏览器打开 https://emailfake.com，自动分配地址即用；换地址点页面上的域名/用户名输入框。
+读信过一下验证码就行。**收信能力本身没问题**（整套体系还在活跃运营），
+但我没能通过 HTTP 拿到真实邮件数据验证——列表在 JS 渲染之后才出现。
+
+---
+
+## 十、SmailPro —— API 在，但凭据藏在 App 里
+
+**地址**：https://smailpro.com
+**性质**：界面花哨的临时邮箱（有网页版和手机 App），后端 API 在 `api.sonjj.com`
+
+### 实测
+
+```
+GET https://api.sonjj.com/v1/temp_email
+→ 401 {"statusCode":401,"error":"Unauthorized","message":"app: Invalid credentials"}
+```
+
+`"app: Invalid credentials"` 这个报错说明：**API 要求 App 端内嵌的凭据**（大概是给
+iOS/Android 客户端签发的）。网页版首页能打开（22KB 的 SPA），但它的邮件操作全部
+走 App 凭据 + 前端加密 payload，网页源码里抠不出可复用的请求。
+
+### 为什么接不进来
+
+**卡在"无需交互式认证"这一条**——和 Mailsac 类似（都需要 key），但更糟：
+
+- Mailsac 的 key 你自己注册就有，流程公开透明
+- SmailPro 的凭据藏在它的 App 二进制里，官方没有对外的 API 申请入口
+
+除非有人逆向它的 App 拿到签名算法（那已经是逆向工程，超出"加渠道"范畴），否则接不了。
+
+### 手动使用的办法
+
+网页打开 https://smailpro.com 即用（界面会引导选域名）。私密性未知，收信能力未实测——
+连不上它的 API，我没有证据证明它当前收信正常，用前自己先发封测试信。
+
+---
+
+## 十一、EmailOnDeck —— hCaptcha 挡在创建邮箱这一步
+
+**地址**：https://www.emailondeck.com
+**性质**：存活很久的老牌临时邮箱，理念是"邮箱地址短时间有效，用完即焚"
+
+### 实测
+
+```
+https://emailondeck.com → 301 → https://www.emailondeck.com/ → 200（站活着）
+
+首页 HTML 里直接躺着 hCaptcha：
+  sitekey="6a356ce3-1f27-4646-a85e-e9dbce83ced6"
+
+另有 recover_email_address.php 等端点，主流程（创建邮箱/读信）都要先过 hCaptcha
+```
+
+### 为什么接不进来
+
+**卡在"无需交互式认证"这一条**：创建邮箱这一步就要过 hCaptcha，验证码不过，
+后面的一切（地址、token、收信）都不存在。TemplateProvider 没有任何地方能塞
+"先解个验证码"这种交互。
+
+和第七节那批 CF 拦截不同——EmailOnDeck 没拦你的请求，它是**故意**用验证码把
+自动化挡在门外的（这是它的商业模式：防滥用）。这类"主动反自动化"的服务，
+加渠道无解。
+
+### 手动使用的办法
+
+浏览器打开 https://www.emailondeck.com，过一下 hCaptcha，它会给你一个地址。
+收信能力未实测（我没法替你过验证码），但这个服务运营了很多年，可靠性口碑尚可。
+
+---
+
 
 ## 小结：想加渠道时的判断顺序
 
@@ -460,10 +609,11 @@ GET https://mailsac.com/api/addresses/demo@mailsac.com/messages
 8. 全过了 → 能接。写好配置用真实邮件验证
 ```
 
-**两个关键提醒**：
+**三个关键提醒**：
 
 - 第 1 步用 curl、第 3 步必须用 Node 重测。我就是靠这个对比，才发现 Temp-Mail.org 是"curl 能过、Node 被拦"的
 - **第 5 步别跳过**。我当初只看正文接口就判定 InboxKitten 接不了，后来发现列表里的 `subject` 就够用了。**先看列表里有什么，再考虑详情接口**
+- **HTTP 200 ≠ 服务活着**。FakeInbox 返回 200，但已经是个博客。第 1 步连上后扫一眼内容是不是还是邮箱，再往下走
 
 ---
 
@@ -502,6 +652,12 @@ GET https://mailsac.com/api/addresses/demo@mailsac.com/messages
 | Temp-Mail.org | ❌ 接不进 | 打开网页，自动分配 | ✅ 有 token 保护，较私密 |
 | Inboxes.com | ❌ 接不进 | 打开网页输名字 | 未验证能否收信 |
 | Mailsac | ❌ 需付费 | 需注册付费 | ✅ 私有 |
+| EmailFake | ❌ 接不进 | 打开网页即用，读信要过验证码 | ⚠️ 部分公开（同族站点互相能看到热门箱） |
+| SmailPro | ❌ 接不进 | 打开网页/App 即用 | 未验证（API 要 App 凭据） |
+| EmailOnDeck | ❌ 接不进 | 网页过 hCaptcha 即用 | ✅ 私有 |
+| TrashMail | ❌ 接不进 | 本网络连网页都打不开（CF 硬拦截） | — |
+| FakeInbox | ☠️ 服务已死 | 域名还在，但已是博客 | — |
+| GetNada | 🔀 已并入 | 直接用 Inboxes.com | 同 Inboxes.com |
 
 > 🔒 **公开性这件事很重要**：InboxKitten 和 Mailnesia 都是"知道名字就能读"。
 > 如果你用它们收验证码，**名字必须够随机**（比如 `xk29fjq1`），千万别用 `test`、`abc` 这种。
@@ -518,3 +674,4 @@ GET https://mailsac.com/api/addresses/demo@mailsac.com/messages
 | 2026-10-27（初版） | 首次整理。InboxKitten 用 SMTP 真实投递验证收信；Mailnesia 从公共箱抓到 40 封真实邮件；Temp-Mail.org 与 Inboxes.com 做了 curl / Node 对照测试 |
 | 2026-10-27（更正） | **推翻 InboxKitten 的判断**：初版说它接不进（因为正文接口要 region 且返回 HTML），实际列表接口的 `subject` 就够用，已作为内置渠道接入并完整验证通过 |
 | 2026-10-27（新增） | 补充 MTempMail 实测：能建箱，但 `fraudfindez.com` 域收不到信（服务端问题）；DuckMail 与 InboxKitten 均用真实邮件跑通完整链路 |
+| 2026-10-27（第二批） | 新增 EmailFake（接口指纹门禁 + 读信验证码）、SmailPro（API 要 App 凭据）、EmailOnDeck（hCaptcha）三节；发现 TrashMail 被 Cloudflare 硬拦截、FakeInbox 已沦为博客、GetNada 并入 Inboxes.com；网络不可达清单扩充 9 个 |
