@@ -335,6 +335,97 @@ export const BUILTIN_TEMPLATES: BuiltinTemplate[] = [
       },
     },
   },
+  {
+    // MTempMail.com — free API with a public key published in their docs
+    // (https://mtempmail.com/page/api). The key is shared across all visitors
+    // (~120 req/min/IP); edit the paths below with a private account key if
+    // 429s appear. The message list carries the full body in `content`: HTML
+    // when the `html` flag is true, plain text otherwise — mapped to html so
+    // the code extractor strips tags either way. receivedAt is zone-less
+    // "YYYY-MM-DD HH:mm:ss"; the backend serializes timestamps in UTC, hence
+    // the 'utc' format.
+    config: {
+      name: 'mtempmail',
+      displayName: 'MTempMail',
+      tier: 'free',
+      trustLevel: 1,
+      rateLimit: { createPerMinute: 8, pollPerMinute: 30 },
+      retention: '~24h (address 10min)',
+      features: { customUsername: false, pollInbox: true, attachments: false },
+      apiBase: 'https://mtempmail.com/api',
+      auth: { type: 'none' },
+      extraHeaders: { 'Accept': 'application/json' },
+      domains: {
+        mode: 'endpoint',
+        path: '/domains/pub_nRn1hUwpdmZvxQNVWDfoXgKyF7dIm9nRIIIt1qDw/free',
+        resultPath: 'data.domains',
+        domainField: 'domain',
+        filter: { field: 'type', equals: 'Free' },
+      },
+      create: {
+        path: '/emails/pub_nRn1hUwpdmZvxQNVWDfoXgKyF7dIm9nRIIIt1qDw',
+        method: 'POST',
+        body: {},
+        responseMapping: { address: 'data.email', authData: { emailToken: 'data.email_token' } },
+        expiresIn: 600,
+      },
+      messages: {
+        timestampFormat: 'utc',
+        path: '/messages/pub_nRn1hUwpdmZvxQNVWDfoXgKyF7dIm9nRIIIt1qDw/{{address}}',
+        method: 'GET',
+        authFrom: 'provider',
+        resultPath: 'messages',
+        itemMapping: { id: 'id', from: 'from_email', subject: 'subject', excerpt: 'subject', receivedAt: 'receivedAt', html: 'content' },
+      },
+      messageDetail: {
+        fromList: true,
+        path: '',
+        method: 'GET',
+        authFrom: 'provider',
+        responseMapping: { id: 'id', from: 'from_email', subject: 'subject', html: 'content', receivedAt: 'receivedAt' },
+      },
+    },
+  },
+  {
+    // InboxKitten.com — public shared inbox: anyone who knows the username can
+    // read it (same model as Maildrop). No create call, any local part works.
+    // The list is Mailgun event data carrying only headers; the body is not
+    // available as JSON (getHtml returns text/html), so code extraction relies
+    // on the subject line.
+    config: {
+      name: 'inboxkitten',
+      displayName: 'InboxKitten',
+      tier: 'free',
+      trustLevel: 1,
+      rateLimit: { createPerMinute: 30, pollPerMinute: 30 },
+      retention: '~days (public inbox, publicly readable)',
+      features: { customUsername: true, pollInbox: true, attachments: false },
+      apiBase: 'https://inboxkitten.com/api/v1/mail',
+      auth: { type: 'none' },
+      extraHeaders: { 'Accept': 'application/json' },
+      domains: { mode: 'static', list: ['inboxkitten.com'] },
+      create: {
+        skip: true,
+        path: '',
+        method: 'POST',
+        responseMapping: { address: '', authData: {} },
+      },
+      messages: {
+        timestampFormat: 'unix_seconds',
+        path: '/list?recipient={{username}}',
+        method: 'GET',
+        authFrom: 'provider',
+        itemMapping: { id: 'id', from: 'message.headers.from', subject: 'message.headers.subject', excerpt: 'message.headers.subject', receivedAt: 'timestamp' },
+      },
+      messageDetail: {
+        fromList: true,
+        path: '',
+        method: 'GET',
+        authFrom: 'provider',
+        responseMapping: { id: 'id', from: 'message.headers.from', subject: 'message.headers.subject', receivedAt: 'timestamp' },
+      },
+    },
+  },
 ];
 
 export const BUILTIN_TEMPLATE_NAMES = new Set(BUILTIN_TEMPLATES.map((entry) => entry.config.name));

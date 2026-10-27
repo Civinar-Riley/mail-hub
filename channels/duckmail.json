@@ -1,0 +1,97 @@
+{
+  "config": {
+    "name": "duckmail",
+    "displayName": "DuckMail",
+    "tier": "free",
+    "trustLevel": 2,
+    "rateLimit": {
+      "createPerMinute": 10,
+      "pollPerMinute": 30
+    },
+    "retention": "~1 day",
+    "features": {
+      "customUsername": true,
+      "pollInbox": true,
+      "attachments": false
+    },
+    "apiBase": "https://api.duckmail.sbs",
+    "auth": {
+      "type": "none"
+    },
+    "extraHeaders": {
+      "Accept": "application/ld+json"
+    },
+    "domains": {
+      "mode": "endpoint",
+      "path": "/domains",
+      "resultPath": "hydra:member",
+      "domainField": "domain",
+      "filter": {
+        "field": "isVerified",
+        "equals": true
+      }
+    },
+    "create": {
+      "path": "/accounts",
+      "method": "POST",
+      "body": {
+        "address": "{{address}}",
+        "password": "{{password}}"
+      },
+      "responseMapping": {
+        "address": "address",
+        "authData": {
+          "accountId": "id"
+        }
+      },
+      "expiresIn": 86400
+    },
+    "postCreate": {
+      "path": "/token",
+      "method": "POST",
+      "body": {
+        "address": "{{address}}",
+        "password": "{{password}}"
+      },
+      "responseMapping": {
+        "authData": {
+          "token": "token"
+        }
+      }
+    },
+    "messages": {
+      "path": "/messages",
+      "method": "GET",
+      "authFrom": "inbox",
+      "authField": "token",
+      "resultPath": "hydra:member",
+      "itemMapping": {
+        "id": "id",
+        "from": "from.address",
+        "subject": "subject",
+        "excerpt": "intro",
+        "receivedAt": "createdAt"
+      }
+    },
+    "messageDetail": {
+      "path": "/messages/{{messageId}}",
+      "method": "GET",
+      "authFrom": "inbox",
+      "authField": "token",
+      "responseMapping": {
+        "id": "id",
+        "from": "from.address",
+        "subject": "subject",
+        "text": "text",
+        "html": "html",
+        "receivedAt": "createdAt"
+      }
+    },
+    "deleteInbox": {
+      "path": "/accounts/{{accountId}}",
+      "method": "DELETE",
+      "authFrom": "inbox",
+      "authField": "token"
+    }
+  }
+}
